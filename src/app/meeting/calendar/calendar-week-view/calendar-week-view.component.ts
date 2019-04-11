@@ -13,7 +13,6 @@ export enum CalendarWeekViewSize {
   styleUrls: ['./calendar-week-view.component.css']
 })
 export class CalendarWeekViewComponent implements OnInit, OnChanges {
-
   weekdayNames = [
     {short: 'SUN', long: 'Sunday'},
     {short: 'MON', long: 'Monday'},
@@ -143,7 +142,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     }
   }
 
-  getMonthName(anydate: Date, size: CalendarWeekViewSize) {
+  getMonthName(anydate: Date, size) {
     const weekdayDate = new Date(anydate);
     let monthName = this.monthNames[weekdayDate.getMonth()].long;
     if (size === CalendarWeekViewSize.XS) {
@@ -209,7 +208,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     return 'black';
   }
 
-  getCellWidth(size: CalendarWeekViewSize) {
+  getCellWidth(size) {
     let width = 40;
     if (size === CalendarWeekViewSize.SM) {
       width = 80;
@@ -220,23 +219,23 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     }
     return width;
   }
-  getSideCellWidth(size: CalendarWeekViewSize) {
+  getSideCellWidth(size) {
     return 20;
   }
 
-  getMeetingCellWidth(meeting: Meeting, size: CalendarWeekViewSize, widthMargin: number) {
+  getMeetingCellWidth(meeting: Meeting, size, widthMargin: number) {
     return (this.getCellWidth(size) - 2 * widthMargin - 1) / (this.getChildLongestPath(meeting) + this.getParentLongestPath(meeting) + 1);
   }
 
-  getCellHeight(size: CalendarWeekViewSize) {
+  getCellHeight(size) {
     return 36;
   }
 
-  getHeaderCellHeight(size: CalendarWeekViewSize) {
+  getHeaderCellHeight(size) {
     return 24;
   }
 
-  getCalendarWeekViewStyle(size: CalendarWeekViewSize) {
+  getCalendarWeekViewStyle(size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : (8 * this.getCellWidth(size)).toString() + 'px',
@@ -245,7 +244,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     };
   }
 
-  getLoadingStyle(size: CalendarWeekViewSize) {
+  getLoadingStyle(size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : (8 * this.getCellWidth(size)).toString() + 'px',
@@ -263,7 +262,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     };
   }
 
-  getTopCornerCellOneStyle(size: CalendarWeekViewSize) {
+  getTopCornerCellOneStyle(size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : this.getCellWidth(size).toString() + 'px',
@@ -279,7 +278,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['border-top'] : '1px solid' + this.getAccentDarkColor(),
     };
   }
-  getTopCornerCellTwoStyle(size: CalendarWeekViewSize) {
+  getTopCornerCellTwoStyle(size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : this.getCellWidth(size).toString() + 'px',
@@ -295,7 +294,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['border-bottom'] : '1px solid' + this.getPrimaryLightColor(),
     };
   }
-  getHeaderOneStyle(weekdayNumber: number, size: CalendarWeekViewSize) {
+  getHeaderOneStyle(weekdayNumber: number, size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : this.getCellWidth(size).toString() + 'px',
@@ -310,7 +309,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['border-top'] : '1px solid' + this.getAccentDarkColor(),
     };
   }
-  getHeaderTwoStyle(weekdayNumber: number, size: CalendarWeekViewSize) {
+  getHeaderTwoStyle(weekdayNumber: number, size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : this.getCellWidth(size).toString() + 'px',
@@ -326,7 +325,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     };
   }
 
-  getSideStyle(hourNumber: number, size: CalendarWeekViewSize) {
+  getSideStyle(hourNumber: number, size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : this.getSideCellWidth(size).toString() + 'px',
@@ -340,7 +339,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['text-align'] : 'center',
     };
   }
-  getHourStyle(weekdayNumber: number, hourNumber: number, size: CalendarWeekViewSize) {
+  getHourStyle(weekdayNumber: number, hourNumber: number, size) {
     return {
       ['box-sizing'] : 'border-box',
       ['width'] : this.getCellWidth(size).toString() + 'px',
@@ -353,7 +352,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
     };
   }
 
-  getMeetingStyle(meeting: Meeting, size: CalendarWeekViewSize) {
+  getMeetingStyle(meeting: Meeting, size) {
     const startDay = meeting.start.getDay();
     const startHour = meeting.start.getHours() + meeting.start.getMinutes() / 60;
     const duration = (meeting.end.getTime() - meeting.start.getTime()) / (3600000);

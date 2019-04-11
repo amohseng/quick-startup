@@ -44,7 +44,7 @@ export class CalendarHeaderComponent implements OnInit {
     this.onTodayClicked();
   }
 
-  getMonthName(monthNumber: number, size: CalendarHeaderSize) {
+  getMonthName(monthNumber: number, size) {
     let monthName = this.monthNames[monthNumber].long;
     if (size === CalendarHeaderSize.XS) {
       monthName = this.monthNames[monthNumber].short;
@@ -52,7 +52,7 @@ export class CalendarHeaderComponent implements OnInit {
     return monthName;
   }
 
-  getDateRangeText(size: CalendarHeaderSize) {
+  getDateRangeText(size) {
     let dateRangeText = '';
     const startDate = this.getDayOfWeekDate(this.calendarDate, 0);
     const startYear = startDate.getFullYear();

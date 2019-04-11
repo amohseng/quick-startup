@@ -1,0 +1,16 @@
+.welcome-box {
+  flex: 1 1 auto;
+  width: 100%;
+  background-image: url("src/assets/img/welcome/background.png");
+  background-repeat: no-repeat;
+  background-size:40%;
+  background-position: center center;
+}
+
+:host {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+}
+
+

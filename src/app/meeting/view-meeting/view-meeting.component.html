@@ -1,0 +1,60 @@
+<section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
+  <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <mat-icon color="primary">date_range</mat-icon>
+    <div class="primary-color">View Meeting</div>
+    <div class="spacer"></div>
+    <button mat-icon-button color="primary" [disabled]="!isOrganizer" (click)="editMeeting()"><mat-icon svgIcon="outline-edit"></mat-icon></button>
+    <button mat-icon-button color="primary" (click)="viewCalendar()"><mat-icon>calendar_today</mat-icon></button>
+  </div>
+  <div *ngIf="!isLoading" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div ngClass="form-item">
+      <mat-icon color="primary">subject</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div ngClass="form-field">
+        {{ meeting.subject }}
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary">people_outline</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div class="form-field">
+        <mat-chip-list #invitationsChipList>
+          <mat-chip *ngFor="let invitation of meeting.invitations">{{ invitation }}</mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary" svgIcon="outline-how_to_reg"></mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div class="form-field">
+        <mat-chip-list #scribesChipList>
+          <mat-chip *ngFor="let scribe of meeting.scribes">{{ scribe }}</mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary" svgIcon="outline-meeting_room"></mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div>
+        {{meeting.meetingRoom.name}}, {{meeting.location.name }}
+      </div>
+      <a *ngIf="selectedLocationUrl" mat-icon-button [href]="selectedLocationUrl" target="_blank"><mat-icon color="primary" svgIcon="outline-map"></mat-icon></a>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary">today</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div>
+        {{meeting.start | date: 'longDate'}}
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary">access_time</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div>
+        {{getHour(meeting.start).text}} - {{getHour(meeting.end).text}}
+      </div>
+    </div>
+  </div>
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+</section>
+

@@ -1,0 +1,34 @@
+a.logo {
+  text-decoration: none;
+  color: white;
+}
+
+a.logo:hover,a.logo:active {
+  color: white;
+}
+
+.logout {
+  cursor: pointer;
+}
+
+.logo-title {
+  font-size: 1.3rem;
+  font-weight: 300;
+  vertical-align: middle;
+}
+.logo-icon {
+  vertical-align: middle;
+}
+
+.display-name {
+  font-weight: 300;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+.display-photo {
+  vertical-align: middle;
+}
+
+.primary-color {
+  color: #388E3C;
+}

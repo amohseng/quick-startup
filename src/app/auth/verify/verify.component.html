@@ -1,0 +1,22 @@
+<section fxLayout="column" fxLayoutAlign="center center" class="row-height">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Email Verification
+      </mat-card-title>
+      <mat-card-subtitle *ngIf="email">
+        {{ email }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content fxLayout="column" fxLayoutAlign="center center">
+      <div>
+        Please check your email and follow the link to verify your email address.<br><br>
+        Already verified? <a (click)="logout()"  routerLink="/login">Login!</a><br>
+        Not your email? <a (click)="logout()" routerLink="/login">Another user!</a><br><br>
+        To resend the verification email press Resend.
+      </div>
+      <button fxFlexAlign="end" mat-button color="primary" [disabled]="isLoading" (click)="sendEmailVerification()">Resend</button>
+    </mat-card-content>
+  </mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+</section>

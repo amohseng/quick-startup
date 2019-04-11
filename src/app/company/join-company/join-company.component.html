@@ -1,0 +1,26 @@
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+<section *ngIf="!isLoading" fxLayout="column" fxLayoutAlign="center center" class="row-height row-width">
+  <mat-list ngClass.xs="section-xs" ngClass.sm="section-sm" ngClass.gt-sm="section-gt-sm">
+    <mat-toolbar color="primary">
+      <span class="section-title">Company Join Requests</span>
+    </mat-toolbar>
+    <div *ngIf="joinRequests.length <= 0" class="message">You can wait for a request to join existing company or create a new one!</div>
+    <mat-list-item *ngFor="let joinRequest of joinRequests">
+      <img matListAvatar [src]="joinRequest.adminPhotoURL" [alt]="joinRequest.adminDisplayName">
+      <h3 matLine><strong>{{joinRequest.adminDisplayName}}</strong></h3>
+      <p matLine>
+        <span>Please accept my request to</span>
+      </p>
+      <p matLine>
+        <span>join <em>{{joinRequest.companyName}}</em></span>
+      </p>
+      <button mat-icon-button color="primary" [disabled]="isWriting" (click)="deleteJoinRequest(joinRequest.id)">
+        <mat-icon svgIcon="outline-cancel"></mat-icon>
+      </button>
+      <button mat-icon-button color="primary" [disabled]="isWriting" (click)="createEmployee(joinRequest)">
+        <mat-icon>check_circle_outline</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+  <button mat-button color='primary' [disabled]="isWriting" (click)="createCompany()">Create New Company</button>
+</section>

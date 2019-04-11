@@ -1,0 +1,28 @@
+mat-sidenav, mat-sidenav-content, mat-sidenav-container, app-sidenav-list {
+  height:100%;
+  display: flex;
+  flex-flow: column;
+  overflow: visible;
+}
+
+main {
+  /* height:100%; */
+  display: flex;
+  flex-flow: column;
+  flex: 1 0 0;
+}
+
+mat-sidenav {
+  width: 250px;
+}
+
+.max-container {
+  margin: auto;
+  width: 1279px;
+  background-color: rgb(250,255,250);
+}
+
+.normal-container {
+  width: 100%;
+  background-color: rgb(252,255,252);
+}

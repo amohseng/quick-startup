@@ -1,0 +1,12 @@
+.primary-color {
+  color: #388E3C;
+}
+
+mat-form-field{
+  width:200px;
+}
+
+.light-button {
+  padding-left: 0px;
+  font-weight: 300;
+}

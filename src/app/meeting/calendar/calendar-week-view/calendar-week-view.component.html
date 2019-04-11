@@ -1,0 +1,67 @@
+<div
+  [ngStyle.xs]="getCalendarWeekViewStyle('XS')"
+  [ngStyle.gt-xs]="getCalendarWeekViewStyle('SM')"
+  [ngStyle.gt-sm]="getCalendarWeekViewStyle('MD')"
+  [ngStyle.gt-md]="getCalendarWeekViewStyle('LG')">
+  <div *ngIf="isLoading" [ngStyle.xs]="getLoadingStyle('XS')"
+       [ngStyle.gt-xs]="getLoadingStyle('SM')"
+       [ngStyle.gt-sm]="getLoadingStyle('MD')"
+       [ngStyle.gt-md]="getLoadingStyle('LG')">
+       Loading...
+  </div>
+  <div
+      [ngStyle.xs]="getTopCornerCellOneStyle('XS')"
+      [ngStyle.gt-xs]="getTopCornerCellOneStyle('SM')"
+      [ngStyle.gt-sm]="getTopCornerCellOneStyle('MD')"
+      [ngStyle.gt-md]="getTopCornerCellOneStyle('LG')">
+    <span fxHide fxShow.xs>W{{ getWeekNumber(anydate) }}</span>
+    <span fxHide fxShow.gt-xs>Week {{ getWeekNumber(anydate) }}</span>
+  </div>
+  <div
+      [ngStyle.xs]="getTopCornerCellTwoStyle('XS')"
+      [ngStyle.gt-xs]="getTopCornerCellTwoStyle('SM')"
+      [ngStyle.gt-sm]="getTopCornerCellTwoStyle('MD')"
+      [ngStyle.gt-md]="getTopCornerCellTwoStyle('LG')">
+      {{ getWeekYear(anydate)}}
+  </div>
+  <ng-container *ngFor="let weekday of weekdayNames; index as weekdayNumber">
+    <div
+      [ngStyle.xs]="getHeaderOneStyle(weekdayNumber,'XS')"
+      [ngStyle.gt-xs]="getHeaderOneStyle(weekdayNumber,'SM')"
+      [ngStyle.gt-sm]="getHeaderOneStyle(weekdayNumber,'MD')"
+      [ngStyle.gt-md]="getHeaderOneStyle(weekdayNumber,'LG')">
+      <span fxHide fxShow.xs>{{weekday.short}}</span>
+      <span fxHide fxShow.gt-xs>{{weekday.long}}</span>
+    </div>
+    <div
+      [ngStyle.xs]="getHeaderTwoStyle(weekdayNumber,'XS')"
+      [ngStyle.gt-xs]="getHeaderTwoStyle(weekdayNumber,'SM')"
+      [ngStyle.gt-sm]="getHeaderTwoStyle(weekdayNumber,'MD')"
+      [ngStyle.gt-md]="getHeaderTwoStyle(weekdayNumber,'LG')">
+      {{ getDayOfWeekDate(anydate, weekdayNumber).getDate() }}
+    </div>
+    <div *ngFor="let hourLabel of hours; index as hourNumber"
+      [ngStyle.xs]="getSideStyle(hourNumber,'XS')"
+      [ngStyle.gt-xs]="getSideStyle(hourNumber,'SM')"
+      [ngStyle.gt-sm]="getSideStyle(hourNumber,'MD')"
+      [ngStyle.gt-md]="getSideStyle(hourNumber,'LG')">
+      <span *ngIf="hourNumber > 0">{{ hourLabel }}</span>
+    </div>
+    <div *ngFor="let hourLabel of hours; index as hourNumber"
+      [ngStyle.xs]="getHourStyle(weekdayNumber, hourNumber,'XS')"
+      [ngStyle.gt-xs]="getHourStyle(weekdayNumber, hourNumber,'SM')"
+      [ngStyle.gt-sm]="getHourStyle(weekdayNumber, hourNumber,'MD')"
+      [ngStyle.gt-md]="getHourStyle(weekdayNumber, hourNumber,'LG')">
+    </div>
+    <div *ngFor="let meeting of meetings"
+      [id] = "meeting.id"
+      (click) = "onMeetingClicked(meeting)"
+      [ngStyle.xs]="getMeetingStyle(meeting,'XS')"
+      [ngStyle.gt-xs]="getMeetingStyle(meeting,'SM')"
+      [ngStyle.gt-sm]="getMeetingStyle(meeting,'MD')"
+      [ngStyle.gt-md]="getMeetingStyle(meeting,'LG')">
+      <span><strong>{{ meeting.subject }}</strong></span>
+      <span>{{ meeting.meetingRoom.name }}, {{ meeting.location.name }}</span>
+    </div>
+  </ng-container>
+</div>

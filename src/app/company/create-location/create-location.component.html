@@ -1,0 +1,20 @@
+<h1 *ngIf="data.action==='create'" mat-dialog-title class="primary-color">Create Location</h1>
+<h1 *ngIf="data.action==='update'" mat-dialog-title class="primary-color">Update Location</h1>
+<mat-dialog-content>
+  <mat-form-field>
+    <input type="text" matInput placeholder="Location name" [ngModel]="data.locationName" required #locationNameInput="ngModel">
+  </mat-form-field>
+  <button mat-button color="primary" class="light-button" (click)="getCurrentCoordinates()"><mat-icon color="primary">my_location</mat-icon> Get Current Coordinates</button>
+  <mat-form-field>
+    <input type="text" matInput placeholder="Latitude" [ngModel]="data.latitude" required #latitudeInput="ngModel">
+  </mat-form-field>
+  <mat-form-field>
+    <input type="text" matInput placeholder="Longitude" [ngModel]="data.longitude" required #longitudeInput="ngModel">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="center center">
+  <button mat-button color="primary"  [mat-dialog-close]="{action: 'cancel'}">Cancel</button>
+  <button mat-button color="primary"
+          [disabled]="!locationNameInput.valid || !latitudeInput.valid || !longitudeInput.valid"
+          [mat-dialog-close]="{action: 'save', locationName: locationNameInput.value, latitude: latitudeInput.value, longitude: longitudeInput.value}">Save</button>
+</mat-dialog-actions>

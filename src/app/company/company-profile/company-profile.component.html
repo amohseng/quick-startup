@@ -1,0 +1,50 @@
+<div fxLayout.lt-sm="column" fxLayoutGap="10px" fxLayoutAlign.lt-sm="start center" fxLayoutAlign.gt-xs="start start" ngClass.gt-xs="tab-content" class="row-width">
+  <mat-list ngClass.xs="section-xs" ngClass.gt-xs="section-gt-xs">
+    <mat-toolbar color="primary">
+      <span class="section-title">Company Profile</span>
+    </mat-toolbar>
+    <div class="section-message">
+      <span class="message">Hi {{ employee.displayName }}, Welcome to <strong>{{ company.name}}</strong> company group on QUICK STARTUP</span>
+    </div>
+    <h3 mat-subheader class="primary-color">Company Name</h3>
+    <mat-list-item *ngIf="!isUpdateCompanyName">
+      <mat-icon mat-list-icon color="primary">business</mat-icon>
+      <p matLine >{{ company.name }}</p>
+      <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="isUpdateCompanyName = true">
+        <mat-icon svgIcon="outline-edit"></mat-icon>
+      </button>
+    </mat-list-item>
+    <mat-list-item  *ngIf="isUpdateCompanyName">
+      <mat-icon mat-list-icon color="primary">business</mat-icon>
+      <mat-form-field matLine>
+        <input type="text" matInput placeholder="Company name" [ngModel]="company.name" name="companyName" required #companyNameInput="ngModel">
+        <mat-error *ngIf="companyNameInput.hasError('required')">Company name is required</mat-error>
+      </mat-form-field>
+      <button mat-icon-button color="primary" [disabled]="!isAdmin || !companyNameInput.valid || isWriting" (click)="updateCompanyName(companyNameInput.value)">
+        <mat-icon svgIcon="outline-save"></mat-icon>
+      </button>
+      <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="isUpdateCompanyName = false">
+        <mat-icon>redo</mat-icon>
+      </button>
+    </mat-list-item>
+    <h3 mat-subheader class="primary-color">Company Locations</h3>
+    <ng-container *ngFor="let location of companyLocations">
+      <mat-list-item>
+        <mat-icon mat-list-icon color="primary" svgIcon="outline-location_on"></mat-icon>
+        <p matLine >{{ location.name }}</p>
+        <a mat-icon-button href="https://www.google.com/maps?q={{location.latitude}},{{location.longitude}}" target="_blank"><mat-icon color="primary" svgIcon="outline-map"></mat-icon></a>
+        <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="tryUpdateLocation(location.id, location.name, location.latitude, location.longitude)">
+          <mat-icon svgIcon="outline-edit"></mat-icon>
+        </button>
+        <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="deleteLocation(location.id)">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </mat-list-item>
+    </ng-container>
+    <mat-list-item *ngIf="isAdmin">
+        <mat-icon mat-list-icon color="primary" svgIcon="outline-add_location"></mat-icon>
+        <button mat-button color="primary" class="light-button" (click)="tryCreateLocation()">Add New Location</button>
+    </mat-list-item>
+
+  </mat-list>
+</div>

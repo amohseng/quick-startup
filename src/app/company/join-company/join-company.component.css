@@ -1,0 +1,29 @@
+.section-xs {
+  width:98%;
+}
+
+.section-sm {
+  width:60%;
+}
+
+.section-gt-sm {
+  width:40%;
+}
+
+.row-height {
+  flex: 1 1 auto;
+}
+
+.row-width {
+  width: 100%;
+}
+
+:host {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+}
+
+.section-title {
+  font-weight: 300;
+}

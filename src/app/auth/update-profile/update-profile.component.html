@@ -1,0 +1,35 @@
+<section fxLayout="column" fxLayoutAlign="center center" class="row-height">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Update Profile
+      </mat-card-title>
+      <mat-card-subtitle *ngIf="email">
+        {{ email }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start" #f="ngForm" (ngSubmit)="updateProfile(f)">
+        <mat-form-field>
+          <input type="text" matInput placeholder="Your display name" [(ngModel)]="profileData.displayName" name="displayName" required #displayNameInput="ngModel">
+          <mat-error *ngIf="displayNameInput.hasError('required')">Display name is required</mat-error>
+        </mat-form-field>
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <div class="image-preview" *ngIf="profileData && profileData.photoURL !== ''">
+            <img [src]="profileData.photoURL" [alt]="profileData.displayName">
+          </div>
+          <mat-progress-bar *ngIf="isUploading" mode="indeterminate"></mat-progress-bar>
+          <ng-container *ngIf="(uploadPercent | async); let uploadPercent">
+            <div *ngIf="uploadPercent < 100  || isUploading">{{ uploadPercent | number : '1.0-0' }}%</div>
+          </ng-container>
+          <div>
+            <button mat-button type="button"  color="primary" (click)="imagepicker.click()">Pick Image</button>
+            <input hidden type="file" accept="image/*" #imagepicker (change)="uploadFile($event)"/>
+          </div>
+        </div>
+        <button fxFlexAlign="end" type="submit" mat-button color="primary" [disabled]="!f.valid || isLoading || isUploading">Update</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+</section>

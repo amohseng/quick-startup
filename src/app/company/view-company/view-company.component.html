@@ -1,0 +1,43 @@
+<mat-tab-group *ngIf="!isLoading" dynamicHeight=true class="module-background" (swipeleft)="onSwipe($event)" (swiperight)="onSwipe($event)" (selectedIndexChange)="onIndexChange($event)" [selectedIndex]="tabIndex">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon color="primary">business</mat-icon>
+      <span class="primary-color" fxHide.xs>Company Profile</span>
+    </ng-template>
+    <app-company-profile
+      [isAdmin]="isAdmin"
+      [company]="company"
+      [employee]="employee"
+      [companyLocations]="companyLocations">
+    </app-company-profile>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon color="primary">people_outline</mat-icon>
+      <span class="primary-color" fxHide.xs>Company Employees</span>
+    </ng-template>
+    <app-company-employees
+      (employeeLeftCompany)="onEmployeeLeaveCompany($event)"
+      [isAdmin]="isAdmin"
+      [email]="email"
+      [company]="company"
+      [employee]="employee"
+      [companyEmployees]="companyEmployees"
+      [companyJoinRequests]="companyJoinRequests">
+    </app-company-employees>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon svgIcon="outline-meeting_room" color="primary"></mat-icon>
+      <span class="primary-color" fxHide.xs>Meeting Rooms</span>
+    </ng-template>
+    <app-meeting-rooms
+      [isAdmin]="isAdmin"
+      [company]="company"
+      [meetingRooms]="meetingRooms"
+      [companyLocations]="companyLocations">
+    </app-meeting-rooms>
+  </mat-tab>
+</mat-tab-group>
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+

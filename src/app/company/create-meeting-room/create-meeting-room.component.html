@@ -1,0 +1,32 @@
+<h1 *ngIf="data.action==='create'" mat-dialog-title class="primary-color">Create Meeting Room</h1>
+<h1 *ngIf="data.action==='update'" mat-dialog-title class="primary-color">Update Meeting Room</h1>
+<mat-dialog-content fxLayout="column">
+  <mat-form-field>
+    <mat-select placeholder="Select Location" [ngModel]="data.locationId" required #locationIdSelect="ngModel">
+      <mat-option *ngFor="let location of data.companyLocations" [value]="location.id">
+        {{location.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div fxLayoutGap="10px">
+    <mat-form-field class="medium">
+      <input type="text" matInput placeholder="Name" [ngModel]="data.name" required #nameInput="ngModel">
+    </mat-form-field>
+    <mat-form-field class="small">
+      <input type="text" matInput placeholder="Capacity" [ngModel]="data.capacity" required pattern="^[\u0661-\u0669|1-9][\u0660-\u0669|0-9]{0,2}$" #capacityInput="ngModel">
+    </mat-form-field>
+  </div>
+  <div fxLayout="column" fxLayoutGap="10px">
+    <div class="primary-color section-title">Available Equipment</div>
+    <mat-checkbox color="primary" [ngModel]="data.whiteboard" #whiteboardCheckBox="ngModel">Whiteboard</mat-checkbox>
+    <mat-checkbox color="primary" [ngModel]="data.screen" #screenCheckBox="ngModel">Screen</mat-checkbox>
+    <mat-checkbox color="primary" [ngModel]="data.loudSpeakers" #loudSpeakersCheckBox="ngModel">Loud Speakers</mat-checkbox>
+    <mat-checkbox color="primary" [ngModel]="data.microphones" #microphonesCheckBox="ngModel">Microphones</mat-checkbox>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="center center">
+  <button mat-button color="primary"  [mat-dialog-close]="{action: 'cancel'}">Cancel</button>
+  <button mat-button color="primary"
+          [disabled]="!nameInput.valid || !capacityInput.valid"
+          [mat-dialog-close]="{action: 'save', name: nameInput.value, capacity: capacityInput.value, whiteboard: whiteboardCheckBox.value, screen: screenCheckBox.value, loudSpeakers: loudSpeakersCheckBox.value, microphones: microphonesCheckBox.value, locationId: locationIdSelect.value}">Save</button>
+</mat-dialog-actions>

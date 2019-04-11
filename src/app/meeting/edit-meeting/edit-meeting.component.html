@@ -1,0 +1,111 @@
+<section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
+  <form #f="ngForm" (ngSubmit)="saveMeeting(f)">
+    <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+      <mat-icon color="primary">date_range</mat-icon>
+      <div class="primary-color">New Meeting</div>
+      <div class="spacer"></div>
+      <button mat-icon-button color="primary" (click)="cancel()">
+        <mat-icon svgIcon="outline-cancel"></mat-icon>
+      </button>
+      <button mat-icon-button type="submit" [disabled]="!f.valid" color="primary">
+        <mat-icon svgIcon="outline-send"></mat-icon>
+      </button>
+    </div>
+    <div *ngIf="!isLoading" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+      <div ngClass="form-item">
+        <mat-icon color="primary">subject</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field ngClass="form-field">
+          <input type="text" autocomplete="off" matInput placeholder="Add Meeting Subject" [ngModel]="meeting.subject" name="subject" required #subjectInput="ngModel">
+          <mat-error *ngIf="subjectInput.hasError('required')">Meeting subject is required</mat-error>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary">people_outline</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field class="form-field">
+          <mat-chip-list #invitationsChipList>
+            <mat-chip *ngFor="let invitation of meeting.invitations"
+                    [removable]="invitation !== this.email" (removed)="removeInvitation(invitation)">
+              {{ invitation }}
+              <mat-icon matChipRemove *ngIf="invitation !== this.email">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Invite Attendees"
+                  [matChipInputFor]="invitationsChipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="addInvitationChip($event)">
+          </mat-chip-list>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary" svgIcon="outline-how_to_reg"></mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field class="form-field">
+          <mat-chip-list #scribesChipList>
+            <mat-chip *ngFor="let scribe of meeting.scribes"
+                    [removable]="scribe !== this.email" (removed)="removeScribe(scribe)">
+              {{ scribe }}
+              <mat-icon matChipRemove *ngIf="scribe !== this.email">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Who Will Take The Minutes?"
+                  [matChipInputFor]="scribesChipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="addScribeChip($event)">
+          </mat-chip-list>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary" svgIcon="outline-meeting_room"></mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field ngClass="form-field">
+          <mat-select placeholder="Select Meeting Room" [ngModel]="meeting.meetingRoom.id" (selectionChange)="onMeetingRoomChange($event)" required name="meetingRoomId" #meetingRoomSelect="ngModel">
+            <mat-option *ngFor="let room of meetingRooms" [value]="room.id">
+              {{room.name}}, {{ getLocationById(room.locationId).name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <a *ngIf="selectedLocationUrl" mat-icon-button [href]="selectedLocationUrl" target="_blank"><mat-icon color="primary" svgIcon="outline-map"></mat-icon></a>
+        <span fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom" class="primary-color primary-circle">{{selectedMeetingRoom.capacity}}</span>
+        <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.whiteboard" color="primary">video_label</mat-icon>
+        <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.microphones" color="primary">mic_none</mat-icon>
+        <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.loudSpeakers" color="primary" svgIcon="outline-speaker"></mat-icon>
+        <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.screen" color="primary">tv</mat-icon>
+        <div fxHide fxShow.gt-xs class="spacer"></div>
+        <div fxHide fxShow.gt-xs class="spacer"></div>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary">today</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Set Meeting Date" [ngModel]="meeting.start" required name="meetingDate" #meetingDateInput="ngModel">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary">access_time</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field class="form-field-sm">
+          <mat-select placeholder="Start Time" [ngModel]="getHour(meeting.start)!.value" (selectionChange)="onStartTimeChange($event, endTimeSelect.value)" required name="startTime" #startTimeSelect="ngModel">
+            <mat-option *ngFor="let hour of hours" [value]="hour.value">
+              {{hour.text}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <span>&nbsp;</span>
+        <mat-form-field class="form-field-sm">
+          <mat-select placeholder="End Time" [ngModel]="getHour(meeting.end)!.value" (selectionChange)="onEndTimeChange($event, startTimeSelect.value)" required name="endTime" #endTimeSelect="ngModel">
+            <ng-container *ngFor="let hour of hours">
+              <mat-option  *ngIf="hour.value > startTimeSelect.value" [value]="hour.value">
+                {{hour.text}}
+              </mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+</section>

@@ -1,0 +1,7 @@
+<div class="toolbar"  ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+  <button mat-icon-button color="primary" [disabled]="disabled" (click)="onPreviousClicked()"><span class="double-font"><mat-icon inline=true>arrow_left</mat-icon></span></button>
+  <button mat-icon-button color="primary" [disabled]="disabled" (click)="onTodayClicked()">Today</button>
+  <button mat-icon-button color="primary" [disabled]="disabled" (click)="onNextClicked()"><span class="double-font"><mat-icon inline=true>arrow_right</mat-icon></span></button>
+  <div class="primary-color" fxHide fxShow.xs>{{ getDateRangeText('XS') }}</div>
+  <div class="primary-color" fxHide fxShow.gt-xs>{{ getDateRangeText('SM') }}</div>
+</div>

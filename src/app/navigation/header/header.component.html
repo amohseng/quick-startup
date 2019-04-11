@@ -1,0 +1,58 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="sidenav.toggle()" fxHide.gt-sm>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a class="logo" matRipple routerLink="/">
+    <mat-icon class="logo-icon" fxHide fxShow.gt-sm>work_outline</mat-icon>
+    <span class="logo-title">QUICK STARTUP</span>
+  </a>
+  <div fxFlex fxLayoutAlign="end" fxHide fxShow.gt-sm>
+    <div *ngIf="authenticated ">
+      <img class="display-photo" *ngIf="profileData" mat-card-avatar [src]="profileData!.photoURL" [alt]="profileData!.displayName">
+      <span class="display-name" *ngIf="profileData">{{ profileData!.displayName }}</span>
+    </div>
+    <button *ngIf="authenticated" mat-icon-button [matMenuTriggerFor]="appsMenu">
+      <mat-icon>apps</mat-icon>
+    </button>
+    <mat-menu #appsMenu="matMenu">
+      <a *ngIf="authenticated" routerLink="/meeting/calendar" mat-menu-item class="menu-item">
+        <mat-icon color="primary">calendar_today</mat-icon>
+        <span class="primary-color">My Calendar</span>
+      </a>
+      <a *ngIf="authenticated" routerLink="/meeting/actions" mat-menu-item class="menu-item">
+        <mat-icon color="primary">list_alt</mat-icon>
+        <span class="primary-color">Action Log</span>
+      </a>
+    </mat-menu>
+    <button mat-icon-button [matMenuTriggerFor]="settingsMenu">
+      <mat-icon svgIcon="outline-settings"></mat-icon>
+    </button>
+    <mat-menu #settingsMenu="matMenu">
+      <a *ngIf="!authenticated" routerLink="/signup" mat-menu-item>
+        <mat-icon color="primary">person_add</mat-icon>
+        <span class="primary-color">Signup</span>
+      </a>
+      <a *ngIf="!authenticated" routerLink="/login" mat-menu-item>
+        <mat-icon color="primary">exit_to_app</mat-icon>
+        <span class="primary-color">Login</span>
+      </a>
+      <a *ngIf="authenticated" routerLink="/company" mat-menu-item>
+        <mat-icon color="primary">work</mat-icon>
+        <span class="primary-color">My Company</span>
+      </a>
+      <a *ngIf="authenticated" routerLink="/updateprofile" mat-menu-item>
+        <mat-icon color="primary">person</mat-icon>
+        <span class="primary-color">My Profile</span>
+      </a>
+      <a *ngIf="authenticated" routerLink="/changepassword" mat-menu-item>
+        <mat-icon color="primary">vpn_key</mat-icon>
+        <span class="primary-color">Change Password</span>
+      </a>
+      <a *ngIf="authenticated" class="logout" (click)="logout()" mat-menu-item>
+        <mat-icon color="primary">eject</mat-icon>
+        <span class="primary-color">Logout</span>
+      </a>
+    </mat-menu>
+  </div>
+
+</mat-toolbar>

@@ -1,0 +1,42 @@
+.module-background {
+  background-color: rgb(250,255,250);
+}
+
+.section-xs {
+  width:98%;
+}
+
+.section-gt-xs {
+  width:45%;
+}
+
+.tab-content {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+mat-form-field {
+  width:300px;
+}
+
+.row-height {
+  height: 100%;
+}
+
+.row-width {
+  width: 100%;
+}
+
+.message {
+  margin-top: 10px;
+  margin-left: 16px;
+  overflow-wrap: break-word;
+}
+
+.section-title {
+  font-weight: 300;
+}
+
+.primary-color {
+  color: #388E3C;
+}

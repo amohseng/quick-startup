@@ -1,0 +1,27 @@
+<section fxLayout="column" fxLayoutAlign="center center" class="row-height">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Login
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start" #f="ngForm" (ngSubmit)="onSubmit(f)">
+        <mat-form-field>
+          <input type="email" matInput placeholder="Your email" ngModel name="email" required email #emailInput="ngModel">
+          <mat-error *ngIf="emailInput.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="!emailInput.hasError('required')">Enter a valid email</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input type="password" matInput placeholder="Your password" ngModel name="password" required minlength="6" #pwInput="ngModel">
+          <mat-error>Enter a valid password</mat-error>
+        </mat-form-field>
+        <div>
+          No account? <a routerLink="/signup">Signup!</a>
+        </div>
+        <button fxFlexAlign="end" type="submit" mat-button color="primary" [disabled]="!f.valid || isLoading">Next</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+</section>

@@ -183,8 +183,6 @@ export class ViewMeetingComponent implements OnInit, OnDestroy {
           id: null,
           email: this.email,
           meetingId: this.meeting.id,
-          displayName: this.profileDate.displayName,
-          photoURL: this.profileDate.photoURL,
           response: null,
           responseDate: null,
           attendance: false,

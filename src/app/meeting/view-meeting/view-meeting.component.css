@@ -161,3 +161,17 @@
   border-radius: 5px;
 }
 
+.warn-border {
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+.warn-light-border {
+  border: 1px solid pink;
+  border-radius: 5px;
+}
+
+.warn-dark-border {
+  border: 1px solid darkred;
+  border-radius: 5px;
+}

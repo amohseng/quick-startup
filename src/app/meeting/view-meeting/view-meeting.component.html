@@ -3,15 +3,40 @@
     <mat-icon color="primary">date_range</mat-icon>
     <div class="primary-color">View Meeting</div>
     <div class="spacer"></div>
-    <button mat-icon-button color="primary" [disabled]="!isOrganizer" (click)="editMeeting()"><mat-icon svgIcon="outline-edit"></mat-icon></button>
+    <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="appsMenu">
+      <span class="disabled-color light-button" *ngIf="!getAttendeeByEmail(email).responseDate"><mat-icon>error_outline</mat-icon></span>
+      <span class="primary-color light-button" *ngIf="getAttendeeByEmail(email).responseDate && getAttendeeByEmail(email).response"><mat-icon>event_available</mat-icon></span>
+      <span class="warn-color light-button" *ngIf="getAttendeeByEmail(email).responseDate && !getAttendeeByEmail(email).response"><mat-icon>event_busy</mat-icon></span>
+    </button>
+    <mat-menu #appsMenu="matMenu">
+      <button *ngIf="!isOrganizer" mat-menu-item (click)="accept()">
+        <mat-icon color="primary">done</mat-icon>
+        <span class="primary-color">Accept</span>
+      </button>
+      <button *ngIf="!isOrganizer" mat-menu-item  (click)="decline()">
+        <mat-icon color="warn">close</mat-icon>
+        <span class="warn-color">Decline</span>
+      </button>
+    </mat-menu>
+    <button *ngIf="isOrganizer" mat-icon-button color="primary" (click)="editMeeting()"><mat-icon svgIcon="outline-edit"></mat-icon></button>
+    <button mat-icon-button color="primary" (click)="viewMinutes()"><mat-icon svgIcon="outline-description"></mat-icon></button>
     <button mat-icon-button color="primary" (click)="viewCalendar()"><mat-icon>calendar_today</mat-icon></button>
   </div>
   <div *ngIf="!isLoading" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
     <div ngClass="form-item">
-      <mat-icon color="primary">subject</mat-icon>
+      <mat-icon color="primary">event_note</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
       <div ngClass="form-field">
-        {{ meeting.subject }}
+        <span class="subject primary-color">{{ meeting.subject }}</span>
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary">person_outline</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div class="form-field">
+        <mat-chip-list >
+          <mat-chip color="primary" selected>{{ meeting.organizer }}</mat-chip>
+        </mat-chip-list>
       </div>
     </div>
     <div ngClass="form-item">
@@ -19,16 +44,24 @@
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
       <div class="form-field">
         <mat-chip-list #invitationsChipList>
-          <mat-chip *ngFor="let invitation of meeting.invitations">{{ invitation }}</mat-chip>
+          <ng-container *ngFor="let invitation of meeting.invitations">
+            <mat-chip *ngIf="!getAttendeeByEmail(invitation).responseDate && invitation !== meeting.organizer">{{ invitation }}</mat-chip>
+            <mat-chip *ngIf="getAttendeeByEmail(invitation).responseDate" [color]="getAttendeeByEmail(invitation).response || invitation === meeting.organizer ?'primary' : 'warn'" selected>
+              {{ invitation }}
+            </mat-chip>
+          </ng-container>
         </mat-chip-list>
       </div>
     </div>
     <div ngClass="form-item">
-      <mat-icon color="primary" svgIcon="outline-how_to_reg"></mat-icon>
+      <mat-icon color="primary" svgIcon="writing"></mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
       <div class="form-field">
         <mat-chip-list #scribesChipList>
-          <mat-chip *ngFor="let scribe of meeting.scribes">{{ scribe }}</mat-chip>
+          <ng-container  *ngFor="let scribe of meeting.scribes">
+              <mat-chip *ngIf="!getAttendeeByEmail(scribe).responseDate && scribe !== meeting.organizer">{{ scribe }}</mat-chip>
+              <mat-chip *ngIf="getAttendeeByEmail(scribe).responseDate || scribe === meeting.organizer" [color]="getAttendeeByEmail(scribe).response || scribe === meeting.organizer ?'primary' : 'warn'" selected>{{ scribe }}</mat-chip>
+          </ng-container>
         </mat-chip-list>
       </div>
     </div>

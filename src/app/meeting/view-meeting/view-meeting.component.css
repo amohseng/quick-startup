@@ -2,12 +2,24 @@
   background-color: rgb(250,255,250);
 }
 
+.subject {
+  font-size: 1.25rem;
+}
+
 .row-height {
   flex: 1 1 auto;
 }
 
 .spacer {
   flex: 1 1 auto;
+}
+
+.light-button {
+  font-weight: 400;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 :host {
@@ -95,6 +107,30 @@
 
 .accent-dark-color {
   color: #FFA726;
+}
+
+.warn-color {
+  color: red;
+}
+
+.warn-light-color {
+  color: pink;
+}
+
+.warn-dark-color {
+  color: darkred;
+}
+
+.disabled-color {
+  color: grey;
+}
+
+.disabled-light-color {
+  color: lightgrey;
+}
+
+.disabled-dark-color {
+  color: darkgrey;
 }
 
 .primary-border {

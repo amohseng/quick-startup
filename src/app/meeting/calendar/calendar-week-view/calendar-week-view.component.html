@@ -61,7 +61,10 @@
         [ngStyle.gt-xs]="getMeetingStyle(meeting,'SM')"
         [ngStyle.gt-sm]="getMeetingStyle(meeting,'MD')"
         [ngStyle.gt-md]="getMeetingStyle(meeting,'LG')">
-        <span><strong>{{ meeting.subject }}</strong></span>
+        <span>
+          <mat-icon *ngIf="attendeeResponseMap.get(meeting.id)==='DECLINED'" inline=true color="warn">cancel</mat-icon>
+          <strong>{{ meeting.subject }}</strong>
+        </span>
         <span>{{ meeting.meetingRoom.name }}, {{ meeting.location.name }}</span>
       </div>
     </ng-container>

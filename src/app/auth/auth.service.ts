@@ -48,7 +48,6 @@ export class AuthService {
     this.uiService.loadingStateChanged.next(true);
     this.afAuth.auth.createUserWithEmailAndPassword(authData.email, authData.password)
     .then(result => {
-      console.log(result.user);
       this.uiService.loadingStateChanged.next(false);
       this.sendEmailVerification();
     })
@@ -63,7 +62,6 @@ export class AuthService {
     this.uiService.loadingStateChanged.next(true);
     this.afAuth.auth.signInWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
-        console.log(result);
         this.uiService.loadingStateChanged.next(false);
       })
       .catch(error => {
@@ -81,7 +79,6 @@ export class AuthService {
       photoURL: profileData.photoURL
     })
     .then(() => {
-      console.log('Profile updated');
       this.profileChange.next(profileData);
       this.uiService.loadingStateChanged.next(false);
     })
@@ -111,7 +108,6 @@ export class AuthService {
     this.uiService.loadingStateChanged.next(true);
     const user = this.afAuth.auth.currentUser;
     user.sendEmailVerification().then(() => {
-      console.log('Email sent');
       this.uiService.showSnackBar('Email verification has been sent to your email', null, 3000);
       this.uiService.loadingStateChanged.next(false);
     }).catch((error) => {
@@ -130,7 +126,6 @@ export class AuthService {
       return user.updatePassword(newPassword);
     })
     .then(() => {
-      console.log('Password Updated');
       this.uiService.showSnackBar('Your password has been updated.', null, 3000);
       this.uiService.loadingStateChanged.next(false);
       this.router.navigate(['/']);

@@ -6,6 +6,6 @@
     <button mat-icon-button color="primary" (click)="createNewMeeting()"><span class="double-font"><mat-icon inline=true>add_circle</mat-icon></span></button>
   </div>
   <app-calendar-header [disabled]="isLoading" (dateChanged)="changeCalendarDate($event)"></app-calendar-header>
-  <app-calendar-week-view [clickable]="!isLoading" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-week-view>
+  <app-calendar-week-view [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-week-view>
 </section>
 

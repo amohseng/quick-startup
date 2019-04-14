@@ -6,6 +6,7 @@ import { Meeting } from '../models/meeting.model';
 import { MeetingService } from '../meeting.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UIService } from 'src/app/util/ui.service';
+import { Attendee } from '../models/attendee.model';
 
 @Component({
   selector: 'app-view-calendar',
@@ -17,8 +18,10 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
   email = '';
   calendarDate: Date = new Date();
   meetings: Meeting[] = [];
+  attendeeResponseMap: Map<string, string>;
 
   meetingsSubscription: Subscription;
+  attendeesSubscription: Subscription;
 
   constructor(private meetingService: MeetingService, private authService: AuthService,
               private uiService: UIService, private router: Router, private route: ActivatedRoute) { }
@@ -29,7 +32,6 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
   }
 
   viewMeeting(meeting: Meeting) {
-    console.log(meeting);
     this.router.navigate([`../${meeting.id}`], {relativeTo: this.route});
   }
 
@@ -53,7 +55,42 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     .getMeetingsByAttendeeEmail(this.email, from, to)
     .subscribe(meetings => {
         this.meetings = meetings;
-        this.isLoading = false;
+        this.initAttendeeResponses();
+        if (this.meetings.length > 0) {
+          this.getAttendeeResponses();
+        } else {
+          this.isLoading = false;
+        }
+    },
+    error => {
+      console.log(error);
+      this.isLoading = false;
+      this.uiService.showSnackBar(error, null, 3000);
+      this.router.navigate(['/']);
+    });
+  }
+  initAttendeeResponses() {
+    this.attendeeResponseMap = new Map<string, string>();
+    this.meetings.forEach(meeting => {
+      this.attendeeResponseMap.set(meeting.id, (meeting.organizer === this.email ? 'ACCEPTED' : 'PENDING'));
+    });
+  }
+  getAttendeeResponses() {
+    let counter = 0;
+    if (this.attendeesSubscription) {
+      this.attendeesSubscription.unsubscribe();
+    }
+    this.attendeesSubscription = this.meetingService
+      .getAttendeeForEachMeeting(this.meetings.map(meeting => meeting.id), this.email)
+      .subscribe((data: Attendee[]) => {
+        counter++;
+        if (data.length > 0) {
+          this.attendeeResponseMap
+              .set(data[0].meetingId, data[0].response ? 'ACCEPTED' : 'DECLINED');
+        }
+        if (counter === this.meetings.length) {
+          this.isLoading = false;
+        }
     },
     error => {
       console.log(error);
@@ -80,9 +117,18 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     return endofdayDate;
   }
 
+  getMeetingById(meetingId: string): Meeting {
+    return this.meetings.find((meeting => {
+      return meeting.id === meetingId;
+    }));
+  }
+
   ngOnDestroy() {
     if (this.meetingsSubscription) {
       this.meetingsSubscription.unsubscribe();
+    }
+    if (this.attendeesSubscription) {
+      this.attendeesSubscription.unsubscribe();
     }
   }
 }

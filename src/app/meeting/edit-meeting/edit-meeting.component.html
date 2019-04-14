@@ -2,7 +2,8 @@
   <form #f="ngForm" (ngSubmit)="saveMeeting(f)">
     <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
       <mat-icon color="primary">date_range</mat-icon>
-      <div class="primary-color">New Meeting</div>
+      <div *ngIf="!editMode" class="primary-color">New Meeting</div>
+      <div *ngIf="editMode" class="primary-color">Update Meeting</div>
       <div class="spacer"></div>
       <button mat-icon-button color="primary" (click)="cancel()">
         <mat-icon svgIcon="outline-cancel"></mat-icon>
@@ -13,7 +14,7 @@
     </div>
     <div *ngIf="!isLoading" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
       <div ngClass="form-item">
-        <mat-icon color="primary">subject</mat-icon>
+        <mat-icon color="primary">event_note</mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field ngClass="form-field">
           <input type="text" autocomplete="off" matInput placeholder="Add Meeting Subject" [ngModel]="meeting.subject" name="subject" required #subjectInput="ngModel">
@@ -39,7 +40,7 @@
         </mat-form-field>
       </div>
       <div ngClass="form-item">
-        <mat-icon color="primary" svgIcon="outline-how_to_reg"></mat-icon>
+        <mat-icon color="primary" svgIcon="writing"></mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field class="form-field">
           <mat-chip-list #scribesChipList>
@@ -68,7 +69,7 @@
         </mat-form-field>
         <a *ngIf="selectedLocationUrl" mat-icon-button [href]="selectedLocationUrl" target="_blank"><mat-icon color="primary" svgIcon="outline-map"></mat-icon></a>
         <span fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom" class="primary-color primary-circle">{{selectedMeetingRoom.capacity}}</span>
-        <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.whiteboard" color="primary">video_label</mat-icon>
+        <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.whiteboard" color="primary" svgIcon="whiteboard"></mat-icon>
         <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.microphones" color="primary">mic_none</mat-icon>
         <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.loudSpeakers" color="primary" svgIcon="outline-speaker"></mat-icon>
         <mat-icon fxHide fxShow.gt-xs *ngIf="selectedMeetingRoom && selectedMeetingRoom.screen" color="primary">tv</mat-icon>
@@ -104,6 +105,15 @@
             </ng-container>
           </mat-select>
         </mat-form-field>
+      </div>
+      <div *ngIf="editMode" ngClass="form-item">
+        <mat-icon color="warn">event_busy</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="warn-color">Set this meeting status as canceled</span>
+        <span>&nbsp;&nbsp;</span>
+        <div ngClass="form-field">
+          <mat-slide-toggle color="warn" [ngModel]="meeting.canceled" name="canceled"></mat-slide-toggle>
+        </div>
       </div>
     </div>
   </form>

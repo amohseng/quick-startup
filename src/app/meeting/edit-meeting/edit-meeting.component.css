@@ -95,6 +95,19 @@
   color: #FFA726;
 }
 
+.warn-color {
+  color: red;
+}
+
+.warn-light-color {
+  color: pink;
+}
+
+.warn-dark-color {
+  color: darkred;
+}
+
+
 .primary-border {
   border: 1px solid #388E3C;
   border-radius: 5px;
@@ -120,6 +133,21 @@
 
 .accent-dark-border {
   border: 1px solid #FFA726;
+  border-radius: 5px;
+}
+
+.warn-border {
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+.warn-light-border {
+  border: 1px solid pink;
+  border-radius: 5px;
+}
+
+.warn-dark-border {
+  border: 1px solid darkred;
   border-radius: 5px;
 }
 

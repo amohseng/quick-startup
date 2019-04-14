@@ -128,9 +128,7 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
       this.meetingSubscription = this.meetingService.getMeetingById(this.meetingId).pipe(take(1)).subscribe(meeting => {
         if (meeting) {
           this.meeting = meeting;
-          this.selectedMeetingRoom = meeting.meetingRoom;
           this.initMeetingDuration();
-          this.initLocationUrl();
           this.fetchedResources += 1;
         } else {
           this.uiService.showSnackBar('Oops, meeting data not found', null, 3000);
@@ -190,12 +188,6 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
       };
       this.initMeetingDuration();
       this.fetchedResources += 1;
-    }
-
-    initLocationUrl() {
-      if (this.meeting.location.latitude && this.meeting.location.longitude) {
-        this.selectedLocationUrl = `https://www.google.com/maps?q=${this.meeting.location.latitude},${this.meeting.location.longitude}`;
-      }
     }
 
     initMeetingDuration() {
@@ -267,6 +259,10 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
         .pipe(take(1))
         .subscribe(meetingRooms => {
             this.meetingRooms = meetingRooms;
+            if (this.editMode) {
+              this.selectedMeetingRoom = this.getMeetingRoomById(this.meeting.meetingRoom.id);
+              this.getLocationUrlById(this.selectedMeetingRoom.locationId);
+            }
             this.fetchedResources += 1;
             if (this.fetchedResources >= this.totalResourcesToFetch) {
               this.isLoading = false;
@@ -316,6 +312,7 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
         this.meeting.end.setMinutes((+form.value.endTime - Math.floor(+form.value.endTime)) * 60);
         this.meeting.end.setSeconds(0);
         this.meeting.end.setMilliseconds(0);
+        this.meeting.canceled = this.editMode ? form.value.canceled : false;
         this.meeting.companyId = this.meeting.meetingRoom.companyId;
         this.meeting.companyEmail = this.meeting.meetingRoom.companyEmail;
         this.meeting.lastUpdated = new Date();

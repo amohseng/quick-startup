@@ -7,6 +7,12 @@ export enum CalendarWeekViewSize {
   MD = 'MD',
   LG = 'LG'
 }
+export enum AttendeeResponse {
+  Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
+  Pending = 'PENDING'
+}
+
 @Component({
   selector: 'app-calendar-week-view',
   templateUrl: './calendar-week-view.component.html',
@@ -43,6 +49,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
   @Input() meetings: Meeting[];
   @Input() clickable: boolean;
   @Input() isLoading: boolean;
+  @Input() attendeeResponseMap: Map<string, string>;
   @Output() meetingClicked = new EventEmitter<Meeting>();
 
   constructor() { }
@@ -199,6 +206,16 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
   }
   getAccentLightColor() {
     return '#FFE0B2';
+  }
+
+  getWarnColor() {
+    return 'red';
+  }
+  getWarnDarkColor() {
+    return 'darkred';
+  }
+  getWarnLightColor() {
+    return 'pink';
   }
 
   getDisabledLightColor() {
@@ -380,7 +397,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['flex-flow'] : 'column',
       ['cursor'] : this.clickable ? 'pointer' : '',
       ['text-decoration'] : meeting.canceled ? 'line-through' : '',
-      ['opacity']: meeting.canceled ? '0.1' : '1'
+      ['opacity']: meeting.canceled || this.attendeeResponseMap.get(meeting.id) !== AttendeeResponse.Accepted ? '0.1' : '1'
     };
   }
 }

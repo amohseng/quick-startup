@@ -106,7 +106,15 @@ export class CompanyService {
       }
     }));
   }
-
+  getCompanies() {
+    return this.db.collection('companies')
+      .snapshotChanges()
+      .pipe(map(actions => actions.map(action => {
+        const data = action.payload.doc.data() as Company;
+        const id = action.payload.doc.id;
+        return { ...data, id };
+      })));
+  }
   getJoinRequestsByInvitedUserEmail(email: string) {
     return this.db.collection('joinRequests', ref => ref.where('email', '==', email))
       .snapshotChanges()

@@ -1,0 +1,35 @@
+.primary-color {
+  color: #388E3C;
+}
+
+mat-form-field{
+  width:200px;
+}
+
+.form-item {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.form-field {
+  flex: 1 1 auto;
+}
+
+.loading {
+  margin: 150px auto 0px auto;
+}
+
+
+mat-dialog-content {
+  height: 310px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}

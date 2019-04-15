@@ -26,7 +26,7 @@
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field class="form-field">
           <mat-chip-list #invitationsChipList>
-            <mat-chip *ngFor="let invitation of meeting.invitations"
+            <mat-chip ngClass.xs="chip-xs" ngClass.gt-xs="chip-gt-xs" *ngFor="let invitation of meeting.invitations"
                     [removable]="invitation !== this.email" (removed)="removeInvitation(invitation)">
               {{ invitation }}
               <mat-icon matChipRemove *ngIf="invitation !== this.email">cancel</mat-icon>
@@ -38,13 +38,14 @@
                   (matChipInputTokenEnd)="addInvitationChip($event)">
           </mat-chip-list>
         </mat-form-field>
+        <button mat-icon-button type="button" color="primary" (click)="selectInvitations()"><mat-icon>group_add</mat-icon></button>
       </div>
       <div ngClass="form-item">
         <mat-icon color="primary" svgIcon="writing"></mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field class="form-field">
           <mat-chip-list #scribesChipList>
-            <mat-chip *ngFor="let scribe of meeting.scribes"
+            <mat-chip ngClass.xs="chip-xs" ngClass.gt-xs="chip-gt-xs" *ngFor="let scribe of meeting.scribes"
                     [removable]="scribe !== this.email" (removed)="removeScribe(scribe)">
               {{ scribe }}
               <mat-icon matChipRemove *ngIf="scribe !== this.email">cancel</mat-icon>
@@ -56,6 +57,7 @@
                   (matChipInputTokenEnd)="addScribeChip($event)">
           </mat-chip-list>
         </mat-form-field>
+        <button mat-icon-button type="button" color="primary" (click)="selectScribes()"><mat-icon>group_add</mat-icon></button>
       </div>
       <div ngClass="form-item">
         <mat-icon color="primary" svgIcon="outline-meeting_room"></mat-icon>

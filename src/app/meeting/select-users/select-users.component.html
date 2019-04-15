@@ -1,0 +1,32 @@
+<div *ngIf="!isLoading">
+  <h1 mat-dialog-title class="primary-color">Select Users</h1>
+  <mat-dialog-content fxLayout="column">
+    <mat-form-field>
+      <mat-select placeholder="Select Company" [ngModel]="selectedCompanyId" (selectionChange)="onCompanyChange($event)" #companyIdSelect="ngModel">
+        <mat-option *ngFor="let company of companies" [value]="company.id">
+          {{company.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngFor="let employee of employees">
+      <div ngClass="form-item" *ngIf="employee.id !== data.organizer">
+        <img class="avatar" [src]="employee.photoURL" [alt]="employee.displayName">
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <div ngClass="form-field">
+          {{ employee.displayName }}
+        </div>
+        <button mat-icon-button color="primary" (click)="toggleUserSelection(employee.id)">
+          <mat-icon *ngIf="!isSelected(employee.id)">check_box_outline_blank</mat-icon>
+          <mat-icon *ngIf="isSelected(employee.id)" svgIcon="outline-check_box"></mat-icon>
+        </button>
+      </div>
+    </ng-container>
+  </mat-dialog-content>
+  <mat-dialog-actions fxLayoutAlign="center center">
+    <button mat-button color="primary"  [mat-dialog-close]="{action: 'cancel'}">Cancel</button>
+    <button mat-button color="primary"  [mat-dialog-close]="{action: 'ok', selectedUsers: selectedUsers}">Ok</button>
+  </mat-dialog-actions>
+</div>
+<mat-spinner *ngIf="isLoading" class="loading"></mat-spinner>
+
+

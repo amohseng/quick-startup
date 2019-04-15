@@ -12,6 +12,7 @@ import { CalendarHeaderComponent } from './calendar/calendar-header/calendar-hea
 import { EditMeetingComponent } from './edit-meeting/edit-meeting.component';
 import { ViewMeetingComponent } from './view-meeting/view-meeting.component';
 import { MinutesComponent } from './minutes/minutes.component';
+import { SelectUsersComponent } from './select-users/select-users.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MinutesComponent } from './minutes/minutes.component';
     CalendarHeaderComponent,
     EditMeetingComponent,
     ViewMeetingComponent,
-    MinutesComponent
+    MinutesComponent,
+    SelectUsersComponent
   ],
   imports: [
     CommonModule,
@@ -30,6 +32,9 @@ import { MinutesComponent } from './minutes/minutes.component';
     FlexLayoutModule,
     MaterialModule,
     MeetingRoutingModule
+  ],
+  entryComponents: [
+    SelectUsersComponent
   ]
 })
 export class MeetingModule { }

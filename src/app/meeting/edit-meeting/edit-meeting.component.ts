@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {COMMA, ENTER, SPACE, SEMICOLON} from '@angular/cdk/keycodes';
-import {MatChipInputEvent} from '@angular/material';
+import {MatChipInputEvent, MatDialog} from '@angular/material';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -12,10 +12,10 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UIService } from 'src/app/util/ui.service';
 import { ProfileData } from 'src/app/auth/models/profile-data.model';
 import { Employee } from 'src/app/company/models/employee.model';
-import { Company } from 'src/app/company/models/company.model';
 import { Location } from 'src/app/company/models/location.model';
 import { MeetingRoom } from 'src/app/company/models/meeting-room.model';
 import { Meeting } from '../models/meeting.model';
+import { SelectUsersComponent } from '../select-users/select-users.component';
 
 
 @Component({
@@ -89,7 +89,6 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
 
   meeting: Meeting;
   employee: Employee;
-  company: Company;
   companyLocations: Location[];
   meetingRooms: MeetingRoom[];
 
@@ -102,7 +101,7 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
 
   constructor(private meetingService: MeetingService, private companyService: CompanyService,
               private authService: AuthService, private uiService: UIService,
-              private router: Router, private route: ActivatedRoute) { }
+              private router: Router, private route: ActivatedRoute, public dialog: MatDialog) { }
 
     ngOnInit() {
       this.isLoading = true;
@@ -155,7 +154,7 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
 
       this.meeting = {
         id: null,
-        organizer: null,
+        organizer: this.email,
         subject: null,
         meetingRoom: {
           id: null,
@@ -408,6 +407,55 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
         const index = this.meeting.scribes.indexOf(scribe);
         if (index >= 0) {
           this.meeting.scribes.splice(index, 1);
+        }
+      }
+
+      selectInvitations() {
+        const dialogRef = this.dialog.open(SelectUsersComponent, {
+          width: '360px',
+          height: '450px',
+          data: {selectedCompanyId: this.employee.companyId, organizer: this.meeting.organizer,
+                 selectedUsers: [...this.meeting.invitations]}
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result && result.action === 'ok') {
+            console.log(result.selectedUsers);
+            this.meeting.invitations = [...result.selectedUsers];
+            this.removeExcessScribes();
+          }
+        });
+      }
+
+      selectScribes() {
+        const dialogRef = this.dialog.open(SelectUsersComponent, {
+          width: '360px',
+          height: '450px',
+          data: {selectedCompanyId: this.employee.companyId, organizer: this.meeting.organizer,
+                 selectedUsers: [...this.meeting.scribes]}
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result && result.action === 'ok') {
+            console.log(result.selectedUsers);
+            this.meeting.scribes = [...result.selectedUsers];
+            this.addMissingInvitations();
+          }
+        });
+      }
+
+      addMissingInvitations() {
+        for (const scribe of this.meeting.scribes) {
+          if (this.meeting.invitations.indexOf(scribe) < 0) {
+            this.addInvitation(scribe);
+          }
+        }
+      }
+
+      removeExcessScribes() {
+        const scribesArr = [...this.meeting.scribes];
+        for (const scribe of scribesArr) {
+          if (this.meeting.invitations.indexOf(scribe) < 0) {
+            this.removeScribe(scribe);
+          }
         }
       }
 

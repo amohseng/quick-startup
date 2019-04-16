@@ -19,7 +19,6 @@ export enum CalendarHeaderSize {
   styleUrls: ['./calendar-header.component.css']
 })
 export class CalendarHeaderComponent implements OnInit {
-  calendarDate: Date;
   monthNames = [
     {short: 'JAN', long: 'January'},
     {short: 'FEB', long: 'February'},
@@ -35,13 +34,13 @@ export class CalendarHeaderComponent implements OnInit {
     {short: 'DEC', long: 'December'},
   ];
 
+  @Input() calendarDate: Date;
   @Input() view: CalendarView = CalendarView.Week;
   @Input() disabled: boolean;
   @Output() dateChanged = new EventEmitter<Date>();
   constructor() { }
 
   ngOnInit() {
-    this.onTodayClicked();
   }
 
   getMonthName(monthNumber: number, size) {
@@ -54,23 +53,31 @@ export class CalendarHeaderComponent implements OnInit {
 
   getDateRangeText(size) {
     let dateRangeText = '';
-    const startDate = this.getDayOfWeekDate(this.calendarDate, 0);
-    const startYear = startDate.getFullYear();
-    const startMonth = startDate.getMonth();
-    const startDay = startDate.getDate();
-
-    const endDate = this.getDayOfWeekDate(this.calendarDate, 6);
-    const endYear = endDate.getFullYear();
-    const endMonth = endDate.getMonth();
-    const endDay = endDate.getDate();
-
-    if (startMonth === endMonth) {
-      dateRangeText = `${this.getMonthName(startMonth, size)} ${startDay} - ${endDay}, ${endYear}`;
-    } else if (startMonth !== endMonth && startYear === endYear) {
-      dateRangeText = `${this.getMonthName(startMonth, size)} ${startDay} - ${this.getMonthName(endMonth, size)} ${endDay}, ${endYear}`;
-    } else if (startMonth !== endMonth && startYear !== endYear) {
+    if (this.view.toUpperCase() === CalendarView.Day) {
       dateRangeText =
-      `${this.getMonthName(startMonth, size)} ${startDay}, ${startYear} - ${this.getMonthName(endMonth, size)} ${endDay}, ${endYear}`;
+      `${this.getMonthName(this.calendarDate.getMonth(), size)} ${this.calendarDate.getDate()}, ${this.calendarDate.getFullYear()}`;
+    } else if (this.view.toUpperCase() === CalendarView.Week) {
+      const startDate = this.getDayOfWeekDate(this.calendarDate, 0);
+      const startYear = startDate.getFullYear();
+      const startMonth = startDate.getMonth();
+      const startDay = startDate.getDate();
+
+      const endDate = this.getDayOfWeekDate(this.calendarDate, 6);
+      const endYear = endDate.getFullYear();
+      const endMonth = endDate.getMonth();
+      const endDay = endDate.getDate();
+
+      if (startMonth === endMonth) {
+        dateRangeText = `${this.getMonthName(startMonth, size)} ${startDay} - ${endDay}, ${endYear}`;
+      } else if (startMonth !== endMonth && startYear === endYear) {
+        dateRangeText = `${this.getMonthName(startMonth, size)} ${startDay} - ${this.getMonthName(endMonth, size)} ${endDay}, ${endYear}`;
+      } else if (startMonth !== endMonth && startYear !== endYear) {
+        dateRangeText =
+        `${this.getMonthName(startMonth, size)} ${startDay}, ${startYear} - ${this.getMonthName(endMonth, size)} ${endDay}, ${endYear}`;
+      }
+    } else if (this.view.toUpperCase() === CalendarView.Month) {
+      dateRangeText =
+      `${this.getMonthName(this.calendarDate.getMonth(), size)}, ${this.calendarDate.getFullYear()}`;
     }
     return dateRangeText;
   }
@@ -86,7 +93,13 @@ export class CalendarHeaderComponent implements OnInit {
 
   getNextDate(anydate: Date) {
     const weekdayDate = new Date(anydate);
-    weekdayDate.setDate(weekdayDate.getDate() + 7);
+    if (this.view.toUpperCase() === CalendarView.Day) {
+      weekdayDate.setDate(weekdayDate.getDate() + 1);
+    } else if (this.view.toUpperCase() === CalendarView.Week) {
+      weekdayDate.setDate(weekdayDate.getDate() + 7);
+    } else if (this.view.toUpperCase() === CalendarView.Month) {
+      weekdayDate.setMonth(weekdayDate.getMonth() + 1);
+    }
     weekdayDate.setHours(0);
     weekdayDate.setMinutes(0);
     weekdayDate.setSeconds(0);
@@ -95,7 +108,13 @@ export class CalendarHeaderComponent implements OnInit {
 
   getPreviousDate(anydate: Date) {
     const weekdayDate = new Date(anydate);
-    weekdayDate.setDate(weekdayDate.getDate() - 7);
+    if (this.view.toUpperCase() === CalendarView.Day) {
+      weekdayDate.setDate(weekdayDate.getDate() - 1);
+    } else if (this.view.toUpperCase() === CalendarView.Week) {
+      weekdayDate.setDate(weekdayDate.getDate() - 7);
+    } else if (this.view.toUpperCase() === CalendarView.Month) {
+      weekdayDate.setMonth(weekdayDate.getMonth() - 1);
+    }
     weekdayDate.setHours(0);
     weekdayDate.setMinutes(0);
     weekdayDate.setSeconds(0);

@@ -47,6 +47,7 @@ export class SelectUsersComponent implements OnInit, OnDestroy {
   }
 
   getEmployeesByCompanyId() {
+    this.employees = [];
     if (this.employeesSubscription) {
       this.employeesSubscription.unsubscribe();
     }

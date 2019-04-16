@@ -7,6 +7,7 @@ import { MeetingService } from '../meeting.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UIService } from 'src/app/util/ui.service';
 import { Attendee } from '../models/attendee.model';
+import { CalendarView } from '../calendar/calendar-header/calendar-header.component';
 
 @Component({
   selector: 'app-view-calendar',
@@ -17,6 +18,8 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
   isLoading = false;
   email = '';
   calendarDate: Date = new Date();
+  currentView: CalendarView;
+  calendarView = CalendarView;
   meetings: Meeting[] = [];
   attendeeResponseMap: Map<string, string>;
 
@@ -29,6 +32,8 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLoading = true;
     this.email = this.authService.getEmail();
+    this.currentView = CalendarView.Week;
+    this.getMeetings();
   }
 
   viewMeeting(meeting: Meeting) {
@@ -44,7 +49,20 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     this.getMeetings();
   }
 
+  setCalendarView(view) {
+    this.currentView = view;
+    this.getMeetings();
+  }
+
   getMeetings() {
+    if (this.currentView === CalendarView.Day) {
+      this.getDayMeetings();
+    } else if (this.currentView === CalendarView.Week) {
+      this.getWeekMeetings();
+    }
+  }
+
+  getWeekMeetings() {
     this.isLoading = true;
     const from: Date = this.getDayOfWeekDate(this.calendarDate, 0);
     const to: Date = this.getEndOfDayDate(this.getDayOfWeekDate(this.calendarDate, 6));
@@ -69,6 +87,33 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
     });
   }
+
+  getDayMeetings() {
+    this.isLoading = true;
+    const from: Date = this.getStartOfDayDate(this.calendarDate);
+    const to: Date = this.getEndOfDayDate(this.calendarDate);
+    if (this.meetingsSubscription) {
+      this.meetingsSubscription.unsubscribe();
+    }
+    this.meetingsSubscription = this.meetingService
+    .getMeetingsByAttendeeEmail(this.email, from, to)
+    .subscribe(meetings => {
+        this.meetings = meetings;
+        this.initAttendeeResponses();
+        if (this.meetings.length > 0) {
+          this.getAttendeeResponses();
+        } else {
+          this.isLoading = false;
+        }
+    },
+    error => {
+      console.log(error);
+      this.isLoading = false;
+      this.uiService.showSnackBar(error, null, 3000);
+      this.router.navigate(['/']);
+    });
+  }
+
   initAttendeeResponses() {
     this.attendeeResponseMap = new Map<string, string>();
     this.meetings.forEach(meeting => {
@@ -106,7 +151,18 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     weekdayDate.setHours(0);
     weekdayDate.setMinutes(0);
     weekdayDate.setSeconds(0);
+    weekdayDate.setMilliseconds(0);
+
     return weekdayDate;
+  }
+
+  getStartOfDayDate(anydate: Date) {
+    const startofdayDate = new Date(anydate);
+    startofdayDate.setHours(0);
+    startofdayDate.setMinutes(0);
+    startofdayDate.setSeconds(0);
+    startofdayDate.setMilliseconds(0);
+    return startofdayDate;
   }
 
   getEndOfDayDate(anydate: Date) {
@@ -114,6 +170,7 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     endofdayDate.setHours(23);
     endofdayDate.setMinutes(59);
     endofdayDate.setSeconds(59);
+    endofdayDate.setMilliseconds(0);
     return endofdayDate;
   }
 

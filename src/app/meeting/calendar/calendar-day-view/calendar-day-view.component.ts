@@ -14,11 +14,11 @@ export enum AttendeeResponse {
 }
 
 @Component({
-  selector: 'app-calendar-week-view',
-  templateUrl: './calendar-week-view.component.html',
-  styleUrls: ['./calendar-week-view.component.css']
+  selector: 'app-calendar-day-view',
+  templateUrl: './calendar-day-view.component.html',
+  styleUrls: ['./calendar-day-view.component.css']
 })
-export class CalendarWeekViewComponent implements OnInit, OnChanges {
+export class CalendarDayViewComponent implements OnInit, OnChanges {
   calendarSize = CalendarSize;
   attendeeResponse = AttendeeResponse;
   weekdayNames = [
@@ -243,7 +243,8 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
   }
 
   getMeetingCellWidth(meeting: Meeting, size, widthMargin: number) {
-    return (this.getCellWidth(size) - 2 * widthMargin - 1) / (this.getChildLongestPath(meeting) + this.getParentLongestPath(meeting) + 1);
+    return ((this.getCellWidth(size) * 7) - 2 * widthMargin - 1) /
+            (this.getChildLongestPath(meeting) + this.getParentLongestPath(meeting) + 1);
   }
 
   getCellHeight(size) {
@@ -313,14 +314,14 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['border-bottom'] : '1px solid' + this.getPrimaryLightColor(),
     };
   }
-  getHeaderOneStyle(weekdayNumber: number, size) {
+  getHeaderOneStyle(size) {
     return {
       ['box-sizing'] : 'border-box',
-      ['width'] : this.getCellWidth(size).toString() + 'px',
+      ['width'] : (this.getCellWidth(size) * 7).toString() + 'px',
       ['height']: this.getHeaderCellHeight(size).toString() + 'px',
       ['position'] : 'absolute',
       ['top'] : '0px',
-      ['left'] : ((weekdayNumber + 1) * this.getCellWidth(size)).toString() + 'px',
+      ['left'] : this.getCellWidth(size).toString() + 'px',
       ['color'] : this.getPrimaryColor(),
       ['display'] : 'flex',
       ['align-items'] : 'center',
@@ -328,14 +329,14 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['border-top'] : '1px solid' + this.getAccentDarkColor(),
     };
   }
-  getHeaderTwoStyle(weekdayNumber: number, size) {
+  getHeaderTwoStyle(size) {
     return {
       ['box-sizing'] : 'border-box',
-      ['width'] : this.getCellWidth(size).toString() + 'px',
+      ['width'] : (this.getCellWidth(size) * 7).toString() + 'px',
       ['height']: this.getHeaderCellHeight(size).toString() + 'px',
       ['position'] : 'absolute',
       ['top'] : this.getHeaderCellHeight(size).toString() + 'px',
-      ['left'] : ((weekdayNumber + 1) * this.getCellWidth(size)).toString() + 'px',
+      ['left'] : this.getCellWidth(size).toString() + 'px',
       ['color'] : this.getPrimaryColor(),
       ['display'] : 'flex',
       ['align-items'] : 'center',
@@ -358,14 +359,14 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['text-align'] : 'center',
     };
   }
-  getHourStyle(weekdayNumber: number, hourNumber: number, size) {
+  getHourStyle(hourNumber: number, size) {
     return {
       ['box-sizing'] : 'border-box',
-      ['width'] : this.getCellWidth(size).toString() + 'px',
+      ['width'] : (this.getCellWidth(size) * 7).toString() + 'px',
       ['height']: this.getCellHeight(size).toString() + 'px',
       ['position'] : 'absolute',
       ['top'] : ((hourNumber * this.getCellHeight(size)) + (2 * this.getHeaderCellHeight(size))).toString() + 'px',
-      ['left'] : ((weekdayNumber + 1) * this.getCellWidth(size)).toString() + 'px',
+      ['left'] : this.getCellWidth(size).toString() + 'px',
       ['border-left'] : '1px solid' + this.getPrimaryLightColor(),
       ['border-bottom'] : '1px solid' + this.getPrimaryLightColor(),
     };
@@ -385,7 +386,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
       ['z-index'] : 100,
       ['top'] : ((startHour * this.getCellHeight(size)) + (2 * this.getHeaderCellHeight(size)) + heightMargin).toString() + 'px',
       ['left'] : (
-        ((startDay + 1) * this.getCellWidth(size) + widthMargin) + 1 +
+        (this.getCellWidth(size) + widthMargin) + 1 +
         ((this.getMeetingCellWidth(meeting, size, widthMargin)) * this.getParentLongestPath(meeting))
       ).toString() + 'px',
       ['border-left'] : '6px solid ' + this.getPrimaryColor(),

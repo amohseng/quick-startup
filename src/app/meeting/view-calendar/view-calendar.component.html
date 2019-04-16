@@ -3,9 +3,24 @@
     <mat-icon color="primary">calendar_today</mat-icon>
     <div class="primary-color">My Calendar</div>
     <div class="spacer"></div>
+    <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="viewMenu">
+      <span class="double-font"><mat-icon inline=true color="primary" *ngIf="currentView === calendarView.Day">view_day</mat-icon></span>
+      <span class="double-font"><mat-icon inline=true color="primary" *ngIf="currentView === calendarView.Week">view_week</mat-icon></span>
+    </button>
+    <mat-menu #viewMenu="matMenu">
+      <button *ngIf="!isOrganizer" mat-menu-item (click)="setCalendarView(calendarView.Day)">
+        <mat-icon color="primary">view_day</mat-icon>
+        <span class="primary-color">Day</span>
+      </button>
+      <button *ngIf="!isOrganizer" mat-menu-item  (click)="setCalendarView(calendarView.Week)">
+        <mat-icon color="primary">view_week</mat-icon>
+        <span class="primary-color">Week</span>
+      </button>
+    </mat-menu>
     <button mat-icon-button color="primary" (click)="createNewMeeting()"><span class="double-font"><mat-icon inline=true>add_circle</mat-icon></span></button>
   </div>
-  <app-calendar-header [disabled]="isLoading" (dateChanged)="changeCalendarDate($event)"></app-calendar-header>
-  <app-calendar-week-view [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-week-view>
+  <app-calendar-header [disabled]="isLoading" [view]="currentView" [calendarDate]="calendarDate" (dateChanged)="changeCalendarDate($event)"></app-calendar-header>
+  <app-calendar-day-view *ngIf="currentView === calendarView.Day" [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-day-view>
+  <app-calendar-week-view *ngIf="currentView === calendarView.Week" [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-week-view>
 </section>
 

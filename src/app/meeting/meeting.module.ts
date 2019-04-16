@@ -13,6 +13,7 @@ import { EditMeetingComponent } from './edit-meeting/edit-meeting.component';
 import { ViewMeetingComponent } from './view-meeting/view-meeting.component';
 import { MinutesComponent } from './minutes/minutes.component';
 import { SelectUsersComponent } from './select-users/select-users.component';
+import { CalendarDayViewComponent } from './calendar/calendar-day-view/calendar-day-view.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { SelectUsersComponent } from './select-users/select-users.component';
     EditMeetingComponent,
     ViewMeetingComponent,
     MinutesComponent,
-    SelectUsersComponent
+    SelectUsersComponent,
+    CalendarDayViewComponent
   ],
   imports: [
     CommonModule,

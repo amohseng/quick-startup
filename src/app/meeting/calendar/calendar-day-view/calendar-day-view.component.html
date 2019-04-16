@@ -24,36 +24,34 @@
       [ngStyle.gt-md]="getTopCornerCellTwoStyle(calendarSize.LG)">
       {{ getWeekYear(anydate)}}
   </div>
-  <ng-container *ngFor="let weekday of weekdayNames; index as weekdayNumber">
-    <div
-      [ngStyle.xs]="getHeaderOneStyle(weekdayNumber,calendarSize.XS)"
-      [ngStyle.gt-xs]="getHeaderOneStyle(weekdayNumber,calendarSize.SM)"
-      [ngStyle.gt-sm]="getHeaderOneStyle(weekdayNumber,calendarSize.MD)"
-      [ngStyle.gt-md]="getHeaderOneStyle(weekdayNumber,calendarSize.LG)">
-      <span fxHide fxShow.xs>{{weekday.short}}</span>
-      <span fxHide fxShow.gt-xs>{{weekday.long}}</span>
-    </div>
-    <div
-      [ngStyle.xs]="getHeaderTwoStyle(weekdayNumber,calendarSize.XS)"
-      [ngStyle.gt-xs]="getHeaderTwoStyle(weekdayNumber,calendarSize.SM)"
-      [ngStyle.gt-sm]="getHeaderTwoStyle(weekdayNumber,calendarSize.MD)"
-      [ngStyle.gt-md]="getHeaderTwoStyle(weekdayNumber,calendarSize.LG)">
-      {{ getDayOfWeekDate(anydate, weekdayNumber).getDate() }}
-    </div>
-    <div *ngFor="let hourLabel of hours; index as hourNumber"
-      [ngStyle.xs]="getSideStyle(hourNumber,calendarSize.XS)"
-      [ngStyle.gt-xs]="getSideStyle(hourNumber,calendarSize.SM)"
-      [ngStyle.gt-sm]="getSideStyle(hourNumber,calendarSize.MD)"
-      [ngStyle.gt-md]="getSideStyle(hourNumber,calendarSize.LG)">
-      <span *ngIf="hourNumber > 0">{{ hourLabel }}</span>
-    </div>
-    <div *ngFor="let hourLabel of hours; index as hourNumber"
-      [ngStyle.xs]="getHourStyle(weekdayNumber, hourNumber,calendarSize.XS)"
-      [ngStyle.gt-xs]="getHourStyle(weekdayNumber, hourNumber,calendarSize.SM)"
-      [ngStyle.gt-sm]="getHourStyle(weekdayNumber, hourNumber,calendarSize.MD)"
-      [ngStyle.gt-md]="getHourStyle(weekdayNumber, hourNumber,calendarSize.LG)">
-    </div>
-  </ng-container>
+
+  <div
+    [ngStyle.xs]="getHeaderOneStyle(calendarSize.XS)"
+    [ngStyle.gt-xs]="getHeaderOneStyle(calendarSize.SM)"
+    [ngStyle.gt-sm]="getHeaderOneStyle(calendarSize.MD)"
+    [ngStyle.gt-md]="getHeaderOneStyle(calendarSize.LG)">
+    <span>{{weekdayNames[anydate.getDay()].long}}</span>
+  </div>
+  <div
+    [ngStyle.xs]="getHeaderTwoStyle(calendarSize.XS)"
+    [ngStyle.gt-xs]="getHeaderTwoStyle(calendarSize.SM)"
+    [ngStyle.gt-sm]="getHeaderTwoStyle(calendarSize.MD)"
+    [ngStyle.gt-md]="getHeaderTwoStyle(calendarSize.LG)">
+    {{ anydate.getDate() }}
+  </div>
+  <div *ngFor="let hourLabel of hours; index as hourNumber"
+    [ngStyle.xs]="getSideStyle(hourNumber,calendarSize.XS)"
+    [ngStyle.gt-xs]="getSideStyle(hourNumber,calendarSize.SM)"
+    [ngStyle.gt-sm]="getSideStyle(hourNumber,calendarSize.MD)"
+    [ngStyle.gt-md]="getSideStyle(hourNumber,calendarSize.LG)">
+    <span *ngIf="hourNumber > 0">{{ hourLabel }}</span>
+  </div>
+  <div *ngFor="let hourLabel of hours; index as hourNumber"
+    [ngStyle.xs]="getHourStyle(hourNumber,calendarSize.XS)"
+    [ngStyle.gt-xs]="getHourStyle(hourNumber,calendarSize.SM)"
+    [ngStyle.gt-sm]="getHourStyle(hourNumber,calendarSize.MD)"
+    [ngStyle.gt-md]="getHourStyle(hourNumber,calendarSize.LG)">
+  </div>
   <ng-container *ngIf="!isLoading">
     <div *ngFor="let meeting of meetings"
       [id] = "meeting.id"
@@ -69,4 +67,5 @@
       <span>{{ meeting.meetingRoom.name }}, {{ meeting.location.name }}</span>
     </div>
   </ng-container>
+
 </div>

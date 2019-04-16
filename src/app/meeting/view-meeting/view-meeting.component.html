@@ -3,12 +3,12 @@
     <mat-icon color="primary">date_range</mat-icon>
     <div class="primary-color">View Meeting</div>
     <div class="spacer"></div>
-    <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="appsMenu">
+    <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="responseMenu">
       <span class="disabled-color light-button" *ngIf="!getAttendeeByEmail(email).responseDate"><mat-icon>error_outline</mat-icon></span>
       <span class="primary-color light-button" *ngIf="getAttendeeByEmail(email).responseDate && getAttendeeByEmail(email).response"><mat-icon>event_available</mat-icon></span>
       <span class="warn-color light-button" *ngIf="getAttendeeByEmail(email).responseDate && !getAttendeeByEmail(email).response"><mat-icon>event_busy</mat-icon></span>
     </button>
-    <mat-menu #appsMenu="matMenu">
+    <mat-menu #responseMenu="matMenu">
       <button *ngIf="!isOrganizer" mat-menu-item (click)="accept()">
         <mat-icon color="primary">done</mat-icon>
         <span class="primary-color">Accept</span>

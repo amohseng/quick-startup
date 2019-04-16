@@ -3,16 +3,16 @@
     <mat-icon color="primary">calendar_today</mat-icon>
     <div class="primary-color">My Calendar</div>
     <div class="spacer"></div>
-    <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="viewMenu">
+    <button mat-icon-button [matMenuTriggerFor]="viewMenu">
       <span class="double-font"><mat-icon inline=true color="primary" *ngIf="currentView === calendarView.Day">view_day</mat-icon></span>
       <span class="double-font"><mat-icon inline=true color="primary" *ngIf="currentView === calendarView.Week">view_week</mat-icon></span>
     </button>
     <mat-menu #viewMenu="matMenu">
-      <button *ngIf="!isOrganizer" mat-menu-item (click)="setCalendarView(calendarView.Day)">
+      <button mat-menu-item (click)="setCalendarView(calendarView.Day)">
         <mat-icon color="primary">view_day</mat-icon>
         <span class="primary-color">Day</span>
       </button>
-      <button *ngIf="!isOrganizer" mat-menu-item  (click)="setCalendarView(calendarView.Week)">
+      <button mat-menu-item  (click)="setCalendarView(calendarView.Week)">
         <mat-icon color="primary">view_week</mat-icon>
         <span class="primary-color">Week</span>
       </button>

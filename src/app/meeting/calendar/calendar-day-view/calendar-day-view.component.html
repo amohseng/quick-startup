@@ -14,15 +14,15 @@
       [ngStyle.gt-xs]="getTopCornerCellOneStyle(calendarSize.SM)"
       [ngStyle.gt-sm]="getTopCornerCellOneStyle(calendarSize.MD)"
       [ngStyle.gt-md]="getTopCornerCellOneStyle(calendarSize.LG)">
-    <span fxHide fxShow.xs>W{{ ds.getWeekNumber(anydate) }}</span>
-    <span fxHide fxShow.gt-xs>Week {{ ds.getWeekNumber(anydate) }}</span>
+    <span fxHide fxShow.xs>{{ ds.getMonthShortName(anydate) }}</span>
+    <span fxHide fxShow.gt-xs> {{ ds.getMonthLongName(anydate) }}</span>
   </div>
   <div
       [ngStyle.xs]="getTopCornerCellTwoStyle(calendarSize.XS)"
       [ngStyle.gt-xs]="getTopCornerCellTwoStyle(calendarSize.SM)"
       [ngStyle.gt-sm]="getTopCornerCellTwoStyle(calendarSize.MD)"
       [ngStyle.gt-md]="getTopCornerCellTwoStyle(calendarSize.LG)">
-      {{ ds.getWeekYear(anydate)}}
+      {{ anydate.getFullYear() }}
   </div>
 
   <div

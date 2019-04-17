@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { DateService } from 'src/app/util/date.service';
 
 export enum CalendarView {
   Day = 'DAY',
@@ -6,7 +7,7 @@ export enum CalendarView {
   Month = 'MONTH'
 }
 
-export enum CalendarHeaderSize {
+export enum CalendarSize {
   XS = 'XS',
   SM = 'SM',
   MD = 'MD',
@@ -19,34 +20,23 @@ export enum CalendarHeaderSize {
   styleUrls: ['./calendar-header.component.css']
 })
 export class CalendarHeaderComponent implements OnInit {
-  monthNames = [
-    {short: 'JAN', long: 'January'},
-    {short: 'FEB', long: 'February'},
-    {short: 'MAR', long: 'March'},
-    {short: 'APR', long: 'April'},
-    {short: 'MAY', long: 'May'},
-    {short: 'JUN', long: 'June'},
-    {short: 'JUL', long: 'July'},
-    {short: 'AUG', long: 'August'},
-    {short: 'SEP', long: 'September'},
-    {short: 'OCT', long: 'October'},
-    {short: 'NOV', long: 'November'},
-    {short: 'DEC', long: 'December'},
-  ];
-
+  calendarSize = CalendarSize;
   @Input() calendarDate: Date;
   @Input() view: CalendarView = CalendarView.Week;
   @Input() disabled: boolean;
   @Output() dateChanged = new EventEmitter<Date>();
-  constructor() { }
+  constructor(public ds: DateService) { }
 
   ngOnInit() {
   }
 
-  getMonthName(monthNumber: number, size) {
-    let monthName = this.monthNames[monthNumber].long;
-    if (size === CalendarHeaderSize.XS) {
-      monthName = this.monthNames[monthNumber].short;
+  getMonthName(anydate: Date, size) {
+    const weekdayDate = new Date(anydate);
+    let monthName;
+    if (size === CalendarSize.XS) {
+      monthName = this.ds.getMonthShortName(weekdayDate);
+    } else {
+      monthName = this.ds.getMonthLongName(weekdayDate);
     }
     return monthName;
   }
@@ -55,40 +45,31 @@ export class CalendarHeaderComponent implements OnInit {
     let dateRangeText = '';
     if (this.view.toUpperCase() === CalendarView.Day) {
       dateRangeText =
-      `${this.getMonthName(this.calendarDate.getMonth(), size)} ${this.calendarDate.getDate()}, ${this.calendarDate.getFullYear()}`;
+      `${this.ds.getMonthLongName(this.calendarDate)} ${this.calendarDate.getDate()}, ${this.calendarDate.getFullYear()}`;
     } else if (this.view.toUpperCase() === CalendarView.Week) {
-      const startDate = this.getDayOfWeekDate(this.calendarDate, 0);
+      const startDate = this.ds.getDayOfWeekDate(this.calendarDate, 0);
       const startYear = startDate.getFullYear();
       const startMonth = startDate.getMonth();
       const startDay = startDate.getDate();
 
-      const endDate = this.getDayOfWeekDate(this.calendarDate, 6);
+      const endDate = this.ds.getDayOfWeekDate(this.calendarDate, 6);
       const endYear = endDate.getFullYear();
       const endMonth = endDate.getMonth();
       const endDay = endDate.getDate();
 
       if (startMonth === endMonth) {
-        dateRangeText = `${this.getMonthName(startMonth, size)} ${startDay} - ${endDay}, ${endYear}`;
+        dateRangeText = `${this.getMonthName(startDate, size)} ${startDay} - ${endDay}, ${endYear}`;
       } else if (startMonth !== endMonth && startYear === endYear) {
-        dateRangeText = `${this.getMonthName(startMonth, size)} ${startDay} - ${this.getMonthName(endMonth, size)} ${endDay}, ${endYear}`;
+        dateRangeText = `${this.getMonthName(startDate, size)} ${startDay} - ${this.getMonthName(endDate, size)} ${endDay}, ${endYear}`;
       } else if (startMonth !== endMonth && startYear !== endYear) {
         dateRangeText =
-        `${this.getMonthName(startMonth, size)} ${startDay}, ${startYear} - ${this.getMonthName(endMonth, size)} ${endDay}, ${endYear}`;
+        `${this.getMonthName(startDate, size)} ${startDay}, ${startYear} - ${this.getMonthName(endDate, size)} ${endDay}, ${endYear}`;
       }
     } else if (this.view.toUpperCase() === CalendarView.Month) {
       dateRangeText =
-      `${this.getMonthName(this.calendarDate.getMonth(), size)}, ${this.calendarDate.getFullYear()}`;
+      `${this.ds.getMonthLongName(this.calendarDate)}, ${this.calendarDate.getFullYear()}`;
     }
     return dateRangeText;
-  }
-
-  getDayOfWeekDate(anydate: Date, weekdayNumber: number) {
-    const weekdayDate = new Date(anydate);
-    weekdayDate.setDate(weekdayDate.getDate() - weekdayDate.getDay() + weekdayNumber);
-    weekdayDate.setHours(0);
-    weekdayDate.setMinutes(0);
-    weekdayDate.setSeconds(0);
-    return weekdayDate;
   }
 
   getNextDate(anydate: Date) {
@@ -103,6 +84,7 @@ export class CalendarHeaderComponent implements OnInit {
     weekdayDate.setHours(0);
     weekdayDate.setMinutes(0);
     weekdayDate.setSeconds(0);
+    weekdayDate.setMilliseconds(0);
     return weekdayDate;
   }
 
@@ -118,6 +100,7 @@ export class CalendarHeaderComponent implements OnInit {
     weekdayDate.setHours(0);
     weekdayDate.setMinutes(0);
     weekdayDate.setSeconds(0);
+    weekdayDate.setMilliseconds(0);
     return weekdayDate;
   }
 

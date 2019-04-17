@@ -127,17 +127,6 @@ export class CalendarDayViewComponent implements OnInit, OnChanges {
     }
   }
 
-  getMonthName(anydate: Date, size) {
-    const weekdayDate = new Date(anydate);
-    let monthName;
-    if (size === CalendarSize.XS) {
-      monthName = this.ds.getMonthShortName(weekdayDate);
-    } else {
-      monthName = this.ds.getMonthLongName(weekdayDate);
-    }
-    return monthName;
-  }
-
   getPrimaryColor() {
     return '#388E3C';
   }

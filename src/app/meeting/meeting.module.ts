@@ -14,6 +14,7 @@ import { ViewMeetingComponent } from './view-meeting/view-meeting.component';
 import { MinutesComponent } from './minutes/minutes.component';
 import { SelectUsersComponent } from './select-users/select-users.component';
 import { CalendarDayViewComponent } from './calendar/calendar-day-view/calendar-day-view.component';
+import { CheckMeetingRoomAvailabilityComponent } from './check-meeting-room-availability/check-meeting-room-availability.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { CalendarDayViewComponent } from './calendar/calendar-day-view/calendar-
     ViewMeetingComponent,
     MinutesComponent,
     SelectUsersComponent,
-    CalendarDayViewComponent
+    CalendarDayViewComponent,
+    CheckMeetingRoomAvailabilityComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,8 @@ import { CalendarDayViewComponent } from './calendar/calendar-day-view/calendar-
     MeetingRoutingModule
   ],
   entryComponents: [
-    SelectUsersComponent
+    SelectUsersComponent,
+    CheckMeetingRoomAvailabilityComponent
   ]
 })
 export class MeetingModule { }

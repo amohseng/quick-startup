@@ -91,16 +91,16 @@
         <mat-icon color="primary">access_time</mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field class="form-field-sm">
-          <mat-select placeholder="Start Time" [ngModel]="getHour(meeting.start)!.value" (selectionChange)="onStartTimeChange($event, endTimeSelect.value)" required name="startTime" #startTimeSelect="ngModel">
-            <mat-option *ngFor="let hour of hours" [value]="hour.value">
+          <mat-select placeholder="Start Time" [ngModel]="ds.getFromTwelveHoursEveryHalf(meeting.start)!.value" (selectionChange)="onStartTimeChange($event, endTimeSelect.value)" required name="startTime" #startTimeSelect="ngModel">
+            <mat-option *ngFor="let hour of ds.getTwelveHoursEveryHalf()" [value]="hour.value">
               {{hour.text}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <span>&nbsp;</span>
         <mat-form-field class="form-field-sm">
-          <mat-select placeholder="End Time" [ngModel]="getHour(meeting.end)!.value" (selectionChange)="onEndTimeChange($event, startTimeSelect.value)" required name="endTime" #endTimeSelect="ngModel">
-            <ng-container *ngFor="let hour of hours">
+          <mat-select placeholder="End Time" [ngModel]="ds.getFromTwelveHoursEveryHalf(meeting.end)!.value" (selectionChange)="onEndTimeChange($event, startTimeSelect.value)" required name="endTime" #endTimeSelect="ngModel">
+            <ng-container *ngFor="let hour of ds.getTwelveHoursEveryHalf()">
               <mat-option  *ngIf="hour.value > startTimeSelect.value" [value]="hour.value">
                 {{hour.text}}
               </mat-option>

@@ -14,17 +14,17 @@
       [ngStyle.gt-xs]="getTopCornerCellOneStyle(calendarSize.SM)"
       [ngStyle.gt-sm]="getTopCornerCellOneStyle(calendarSize.MD)"
       [ngStyle.gt-md]="getTopCornerCellOneStyle(calendarSize.LG)">
-    <span fxHide fxShow.xs>W{{ getWeekNumber(anydate) }}</span>
-    <span fxHide fxShow.gt-xs>Week {{ getWeekNumber(anydate) }}</span>
+    <span fxHide fxShow.xs>W{{ ds.getWeekNumber(anydate) }}</span>
+    <span fxHide fxShow.gt-xs>Week {{ ds.getWeekNumber(anydate) }}</span>
   </div>
   <div
       [ngStyle.xs]="getTopCornerCellTwoStyle(calendarSize.XS)"
       [ngStyle.gt-xs]="getTopCornerCellTwoStyle(calendarSize.SM)"
       [ngStyle.gt-sm]="getTopCornerCellTwoStyle(calendarSize.MD)"
       [ngStyle.gt-md]="getTopCornerCellTwoStyle(calendarSize.LG)">
-      {{ getWeekYear(anydate)}}
+      {{ ds.getWeekYear(anydate)}}
   </div>
-  <ng-container *ngFor="let weekday of weekdayNames; index as weekdayNumber">
+  <ng-container *ngFor="let weekday of ds.getWeekdayNames(); index as weekdayNumber">
     <div
       [ngStyle.xs]="getHeaderOneStyle(weekdayNumber,calendarSize.XS)"
       [ngStyle.gt-xs]="getHeaderOneStyle(weekdayNumber,calendarSize.SM)"
@@ -38,16 +38,16 @@
       [ngStyle.gt-xs]="getHeaderTwoStyle(weekdayNumber,calendarSize.SM)"
       [ngStyle.gt-sm]="getHeaderTwoStyle(weekdayNumber,calendarSize.MD)"
       [ngStyle.gt-md]="getHeaderTwoStyle(weekdayNumber,calendarSize.LG)">
-      {{ getDayOfWeekDate(anydate, weekdayNumber).getDate() }}
+      {{ ds.getDayOfWeekDate(anydate, weekdayNumber).getDate() }}
     </div>
-    <div *ngFor="let hourLabel of hours; index as hourNumber"
+    <div *ngFor="let hourLabel of ds.getTwelveHoursLabelsEveryHour(); index as hourNumber"
       [ngStyle.xs]="getSideStyle(hourNumber,calendarSize.XS)"
       [ngStyle.gt-xs]="getSideStyle(hourNumber,calendarSize.SM)"
       [ngStyle.gt-sm]="getSideStyle(hourNumber,calendarSize.MD)"
       [ngStyle.gt-md]="getSideStyle(hourNumber,calendarSize.LG)">
       <span *ngIf="hourNumber > 0">{{ hourLabel }}</span>
     </div>
-    <div *ngFor="let hourLabel of hours; index as hourNumber"
+    <div *ngFor="let hourLabel of ds.getTwelveHoursLabelsEveryHour(); index as hourNumber"
       [ngStyle.xs]="getHourStyle(weekdayNumber, hourNumber,calendarSize.XS)"
       [ngStyle.gt-xs]="getHourStyle(weekdayNumber, hourNumber,calendarSize.SM)"
       [ngStyle.gt-sm]="getHourStyle(weekdayNumber, hourNumber,calendarSize.MD)"

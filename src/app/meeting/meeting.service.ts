@@ -56,6 +56,20 @@ export class MeetingService {
       })));
   }
 
+  getMeetingsByMeetingRoomId(meetingRoomId: string, from: Date, to: Date) {
+    return this.db.collection('meetings', ref => ref.where('meetingRoom.id', '==', meetingRoomId)
+                                                    .where('start', '>=', from)
+                                                    .where('start', '<=', to))
+      .snapshotChanges()
+      .pipe(map(actions => actions.map(action => {
+        const data = action.payload.doc.data() as Meeting;
+        const id = action.payload.doc.id;
+        const start = (data.start as unknown as firestore.Timestamp).toDate();
+        const end = (data.end as unknown as firestore.Timestamp).toDate();
+        return { ...data, id, start, end };
+      })));
+  }
+
   getMeetingById(meetingId: string) {
     return this.db.doc<Meeting>(`meetings/${meetingId}`).valueChanges()
     .pipe(map(data => {

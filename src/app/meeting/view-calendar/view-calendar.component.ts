@@ -6,6 +6,8 @@ import { Meeting } from '../models/meeting.model';
 import { MeetingService } from '../meeting.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UIService } from 'src/app/util/ui.service';
+import { DateService } from 'src/app/util/date.service';
+
 import { Attendee } from '../models/attendee.model';
 import { CalendarView } from '../calendar/calendar-header/calendar-header.component';
 
@@ -27,7 +29,7 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
   attendeesSubscription: Subscription;
 
   constructor(private meetingService: MeetingService, private authService: AuthService,
-              private uiService: UIService, private router: Router, private route: ActivatedRoute) { }
+              private uiService: UIService, private router: Router, private route: ActivatedRoute, private ds: DateService) { }
 
   ngOnInit() {
     this.isLoading = true;
@@ -64,8 +66,8 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
 
   getWeekMeetings() {
     this.isLoading = true;
-    const from: Date = this.getDayOfWeekDate(this.calendarDate, 0);
-    const to: Date = this.getEndOfDayDate(this.getDayOfWeekDate(this.calendarDate, 6));
+    const from: Date = this.ds.getDayOfWeekDate(this.calendarDate, 0);
+    const to: Date = this.ds.getEndOfDayDate(this.ds.getDayOfWeekDate(this.calendarDate, 6));
     if (this.meetingsSubscription) {
       this.meetingsSubscription.unsubscribe();
     }
@@ -90,8 +92,8 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
 
   getDayMeetings() {
     this.isLoading = true;
-    const from: Date = this.getStartOfDayDate(this.calendarDate);
-    const to: Date = this.getEndOfDayDate(this.calendarDate);
+    const from: Date = this.ds.getStartOfDayDate(this.calendarDate);
+    const to: Date = this.ds.getEndOfDayDate(this.calendarDate);
     if (this.meetingsSubscription) {
       this.meetingsSubscription.unsubscribe();
     }
@@ -143,35 +145,6 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
       this.uiService.showSnackBar(error, null, 3000);
       this.router.navigate(['/']);
     });
-  }
-
-  getDayOfWeekDate(anydate: Date, weekdayNumber: number) {
-    const weekdayDate = new Date(anydate);
-    weekdayDate.setDate(weekdayDate.getDate() - weekdayDate.getDay() + weekdayNumber);
-    weekdayDate.setHours(0);
-    weekdayDate.setMinutes(0);
-    weekdayDate.setSeconds(0);
-    weekdayDate.setMilliseconds(0);
-
-    return weekdayDate;
-  }
-
-  getStartOfDayDate(anydate: Date) {
-    const startofdayDate = new Date(anydate);
-    startofdayDate.setHours(0);
-    startofdayDate.setMinutes(0);
-    startofdayDate.setSeconds(0);
-    startofdayDate.setMilliseconds(0);
-    return startofdayDate;
-  }
-
-  getEndOfDayDate(anydate: Date) {
-    const endofdayDate = new Date(anydate);
-    endofdayDate.setHours(23);
-    endofdayDate.setMinutes(59);
-    endofdayDate.setSeconds(59);
-    endofdayDate.setMilliseconds(0);
-    return endofdayDate;
   }
 
   getMeetingById(meetingId: string): Meeting {

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { DateService } from 'src/app/util/date.service';
 import { Meeting } from '../../models/meeting.model';
 
 export enum CalendarSize {
@@ -21,31 +22,6 @@ export enum AttendeeResponse {
 export class CalendarWeekViewComponent implements OnInit, OnChanges {
   calendarSize = CalendarSize;
   attendeeResponse = AttendeeResponse;
-  weekdayNames = [
-    {short: 'SUN', long: 'Sunday'},
-    {short: 'MON', long: 'Monday'},
-    {short: 'TUE', long: 'Tuesday'},
-    {short: 'WED', long: 'Wednesday'},
-    {short: 'THU', long: 'Thursday'},
-    {short: 'FRI', long: 'Friday'},
-    {short: 'SAT', long: 'Saturday'},
-  ];
-  monthNames = [
-    {short: 'JAN', long: 'January'},
-    {short: 'FEB', long: 'February'},
-    {short: 'MAR', long: 'March'},
-    {short: 'APR', long: 'April'},
-    {short: 'MAY', long: 'May'},
-    {short: 'JUN', long: 'June'},
-    {short: 'JUL', long: 'July'},
-    {short: 'AUG', long: 'August'},
-    {short: 'SEP', long: 'September'},
-    {short: 'OCT', long: 'October'},
-    {short: 'NOV', long: 'November'},
-    {short: 'DEC', long: 'December'},
-  ];
-  hours = ['0', '1 AM', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
-           '12 PM', '1' , '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
 
   @Input() anydate: Date;
   @Input() meetings: Meeting[];
@@ -54,7 +30,7 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
   @Input() attendeeResponseMap: Map<string, string>;
   @Output() meetingClicked = new EventEmitter<Meeting>();
 
-  constructor() { }
+  constructor(public ds: DateService) { }
 
   ngOnInit() {
   }
@@ -153,42 +129,13 @@ export class CalendarWeekViewComponent implements OnInit, OnChanges {
 
   getMonthName(anydate: Date, size) {
     const weekdayDate = new Date(anydate);
-    let monthName = this.monthNames[weekdayDate.getMonth()].long;
+    let monthName;
     if (size === CalendarSize.XS) {
-      monthName = this.monthNames[weekdayDate.getMonth()].short;
+      monthName = this.ds.getMonthShortName(weekdayDate);
+    } else {
+      monthName = this.ds.getMonthLongName(weekdayDate);
     }
     return monthName;
-  }
-
-  getWeekYear(anydate: Date) {
-    const lastDayDate = this.getDayOfWeekDate(anydate, 6);
-    return lastDayDate.getFullYear();
-  }
-
-  getWeekNumber(anydate: Date) {
-    let weekNumber = 1;
-    const lastDayDate = this.getDayOfWeekDate(anydate, 6);
-    const oneJan = new Date(lastDayDate.getFullYear(), 0, 1);
-    const passedDays = Math.floor((lastDayDate.getTime() - oneJan.getTime()) / 86400000);
-    weekNumber = Math.ceil((passedDays + oneJan.getDay() + 1) / 7);
-    return (weekNumber < 10 ? '0' : '') + weekNumber;
-  }
-
-  getDayOfWeekDate(anydate: Date, weekdayNumber: number) {
-    const weekdayDate = new Date(anydate);
-    weekdayDate.setDate(weekdayDate.getDate() - weekdayDate.getDay() + weekdayNumber);
-    weekdayDate.setHours(0);
-    weekdayDate.setMinutes(0);
-    weekdayDate.setSeconds(0);
-    return weekdayDate;
-  }
-
-  getEndOfDayDate(anydate: Date) {
-    const endofdayDate = new Date(anydate);
-    endofdayDate.setHours(23);
-    endofdayDate.setMinutes(59);
-    endofdayDate.setSeconds(59);
-    return endofdayDate;
   }
 
   getPrimaryColor() {

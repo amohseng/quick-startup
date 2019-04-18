@@ -29,6 +29,7 @@ export class CalendarDayViewComponent implements OnInit, OnChanges {
   @Input() isLoading: boolean;
   @Input() attendeeResponseMap: Map<string, string>;
   @Output() meetingClicked = new EventEmitter<Meeting>();
+  @Output() slotDoubleClicked = new EventEmitter<{meetingDate: Date, startTime: number, endTime: number}>();
 
   constructor(public ds: DateService) { }
 
@@ -44,6 +45,13 @@ export class CalendarDayViewComponent implements OnInit, OnChanges {
   onMeetingClicked(meeting: Meeting) {
     if (this.clickable) {
       this.meetingClicked.emit(meeting);
+    }
+  }
+
+  onSlotDoubleClicked(meetingDate: Date, startTime: number) {
+    if (this.clickable) {
+      const endTime = startTime + 1;
+      this.slotDoubleClicked.emit({meetingDate: meetingDate, startTime: startTime, endTime: endTime});
     }
   }
 

@@ -47,6 +47,7 @@
     <span *ngIf="hourNumber > 0">{{ hourLabel }}</span>
   </div>
   <div *ngFor="let hourLabel of ds.getTwelveHoursLabelsEveryHour(); index as hourNumber"
+    (dblclick)="onSlotDoubleClicked(ds.getStartOfDayDate(anydate),hourNumber)"
     [ngStyle.xs]="getHourStyle(hourNumber,calendarSize.XS)"
     [ngStyle.gt-xs]="getHourStyle(hourNumber,calendarSize.SM)"
     [ngStyle.gt-sm]="getHourStyle(hourNumber,calendarSize.MD)"

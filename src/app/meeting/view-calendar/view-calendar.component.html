@@ -17,10 +17,10 @@
         <span class="primary-color">Week</span>
       </button>
     </mat-menu>
-    <button mat-icon-button color="primary" (click)="createNewMeeting()"><span class="double-font"><mat-icon inline=true>add_circle</mat-icon></span></button>
+    <button mat-icon-button color="primary" (click)="createNewMeeting(null)"><span class="double-font"><mat-icon inline=true>add_circle</mat-icon></span></button>
   </div>
   <app-calendar-header [disabled]="isLoading" [view]="currentView" [calendarDate]="calendarDate" (dateChanged)="changeCalendarDate($event)"></app-calendar-header>
-  <app-calendar-day-view *ngIf="currentView === calendarView.Day" [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-day-view>
-  <app-calendar-week-view *ngIf="currentView === calendarView.Week" [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-week-view>
+  <app-calendar-day-view *ngIf="currentView === calendarView.Day" [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" (slotDoubleClicked)="createNewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-day-view>
+  <app-calendar-week-view *ngIf="currentView === calendarView.Week" [clickable]="!isLoading" [attendeeResponseMap]="attendeeResponseMap" [isLoading]="isLoading" (meetingClicked)="viewMeeting($event)" (slotDoubleClicked)="createNewMeeting($event)" [anydate]="calendarDate" [meetings]="meetings"></app-calendar-week-view>
 </section>
 

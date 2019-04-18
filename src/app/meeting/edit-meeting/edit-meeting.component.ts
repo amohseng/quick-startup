@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import {COMMA, ENTER, SPACE, SEMICOLON} from '@angular/cdk/keycodes';
 import {MatChipInputEvent, MatDialog} from '@angular/material';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, withLatestFrom, map } from 'rxjs/operators';
 
 import { MeetingService } from '../meeting.service';
 import { CompanyService } from 'src/app/company/company.service';
@@ -27,7 +27,9 @@ import { SelectUsersComponent } from '../select-users/select-users.component';
 })
 export class EditMeetingComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, SPACE, SEMICOLON];
-
+  newMeetingDate = null;
+  newMeetingStartTime = null;
+  newMeetingEndTime = null;
   meetingId = '';
   editMode = false;
   meetingDuration = 0;
@@ -59,9 +61,22 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       this.email = this.authService.getEmail();
       this.profileData = this.authService.getProfile();
-      this.route.params.subscribe((params: Params) => {
-        this.meetingId = params['id'];
-        this.editMode = params['id'] != null;
+      this.route.params
+      .pipe(
+        withLatestFrom(this.route.queryParams),
+        map(([params, queryParams]) => {
+          return {
+            params: params,
+            queryParams: queryParams
+          };
+        })
+      )
+      .subscribe((result) => {
+        this.newMeetingDate = result.queryParams['meetingDate'];
+        this.newMeetingStartTime = result.queryParams['startTime'];
+        this.newMeetingEndTime = result.queryParams['endTime'];
+        this.meetingId = result.params['id'];
+        this.editMode = result.params['id'] != null;
         this.initMeeting();
       });
       this.getEmployee();
@@ -95,15 +110,28 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
     }
 
     setNewMeeting() {
-      const start = new Date();
-      const end = new Date();
-      start.setHours(9);
+      let start: Date, end: Date;
+      if (this.newMeetingDate) {
+        start = new Date(this.newMeetingDate);
+        end = new Date(this.newMeetingDate);
+        start.setHours(this.newMeetingStartTime);
+        if (this.newMeetingEndTime === '24') {
+          end.setHours(23);
+          end.setMinutes(30);
+        } else {
+          end.setHours(this.newMeetingEndTime);
+          end.setMinutes(0);
+        }
+      } else {
+        start = new Date();
+        end = new Date();
+        start.setHours(9);
+        end.setHours(10);
+        end.setMinutes(0);
+      }
       start.setMinutes(0);
       start.setSeconds(0);
       start.setMilliseconds(0);
-
-      end.setHours(10);
-      end.setMinutes(0);
       end.setSeconds(0);
       end.setMilliseconds(0);
 

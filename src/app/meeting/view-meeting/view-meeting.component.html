@@ -91,7 +91,7 @@
       <mat-icon color="primary">access_time</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
       <div>
-        {{getHour(meeting.start).text}} - {{getHour(meeting.end).text}}
+        {{ds.getFromTwelveHoursEveryHalf(meeting.start).text}} - {{ds.getFromTwelveHoursEveryHalf(meeting.end).text}}
       </div>
     </div>
   </div>

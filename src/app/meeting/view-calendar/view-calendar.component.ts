@@ -42,8 +42,17 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     this.router.navigate([`../${meeting.id}`], {relativeTo: this.route});
   }
 
-  createNewMeeting() {
-    this.router.navigate(['../new'], {relativeTo: this.route});
+  createNewMeeting(data) {
+    let meetingDate: Date = null;
+    let startTime: number = null;
+    let endTime: number = null;
+    if (data) {
+      meetingDate = data.meetingDate;
+      startTime = data.startTime;
+      endTime = data.endTime;
+    }
+    this.router.navigate(['../new'],
+    {relativeTo: this.route, queryParams: {'meetingDate': meetingDate, 'startTime': startTime, 'endTime': endTime}});
   }
 
   changeCalendarDate(anydate: Date) {

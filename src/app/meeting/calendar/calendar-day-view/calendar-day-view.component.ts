@@ -23,6 +23,7 @@ export class CalendarDayViewComponent implements OnInit, OnChanges {
   calendarSize = CalendarSize;
   attendeeResponse = AttendeeResponse;
 
+  @Input() forceXS = false;
   @Input() anydate: Date;
   @Input() meetings: Meeting[];
   @Input() clickable: boolean;
@@ -172,6 +173,10 @@ export class CalendarDayViewComponent implements OnInit, OnChanges {
   }
 
   getCellWidth(size) {
+    if (this.forceXS) {
+      return 40;
+    }
+
     let width = 40;
     if (size === CalendarSize.SM) {
       width = 80;

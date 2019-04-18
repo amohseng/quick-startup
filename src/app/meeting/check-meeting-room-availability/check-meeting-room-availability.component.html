@@ -1,3 +1,13 @@
-<p>
-  check-meeting-room-availability works!
-</p>
+<mat-dialog-content fxLayout="column">
+  <app-calendar-day-view
+    clickable="false"
+    forceXS="true"
+    [attendeeResponseMap]="attendeeResponseMap"
+    [isLoading]="isLoading"
+    [anydate]="calendarDate"
+    [meetings]="meetings">
+  </app-calendar-day-view>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="center center">
+  <button mat-button color="primary"  [mat-dialog-close]="{action: 'ok'}">Ok</button>
+</mat-dialog-actions>

@@ -18,6 +18,7 @@ import { Location } from 'src/app/company/models/location.model';
 import { MeetingRoom } from 'src/app/company/models/meeting-room.model';
 import { Meeting } from '../models/meeting.model';
 import { SelectUsersComponent } from '../select-users/select-users.component';
+import { CheckMeetingRoomAvailabilityComponent } from '../check-meeting-room-availability/check-meeting-room-availability.component';
 
 
 @Component({
@@ -400,6 +401,12 @@ export class EditMeetingComponent implements OnInit, OnDestroy {
             this.meeting.invitations = [...result.selectedUsers];
             this.removeExcessScribes();
           }
+        });
+      }
+
+      checkAvailability(meetingRoomId: string, calendarDate: Date) {
+        const dialogRef = this.dialog.open(CheckMeetingRoomAvailabilityComponent, {
+          data: {meetingRoomId: meetingRoomId, calendarDate: calendarDate}
         });
       }
 

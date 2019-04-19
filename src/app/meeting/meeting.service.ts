@@ -6,6 +6,7 @@ import { Meeting } from './models/meeting.model';
 import { firestore } from 'firebase';
 import { Attendee } from './models/attendee.model';
 import { merge } from 'rxjs';
+import { Topic } from './models/topic.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,10 @@ import { merge } from 'rxjs';
 export class MeetingService {
 
   constructor(private db: AngularFirestore) { }
+
+  getDBId() {
+    return this.db.createId();
+  }
 
   saveMeeting(meeting: Meeting, isNew: boolean): Promise<string> {
     if (isNew) {
@@ -91,7 +96,9 @@ export class MeetingService {
       .pipe(map(actions => actions.map(action => {
         const data = action.payload.doc.data() as Attendee;
         const id = action.payload.doc.id;
-        return { ...data, id };
+        const responseDate = (data.responseDate as unknown as firestore.Timestamp).toDate();
+        const attendanceDate = (data.attendanceDate as unknown as firestore.Timestamp).toDate();
+        return { ...data, id, responseDate, attendanceDate };
       })));
   }
 
@@ -101,7 +108,9 @@ export class MeetingService {
       .pipe(map(actions => actions.map(action => {
         const data = action.payload.doc.data() as Attendee;
         const id = action.payload.doc.id;
-        return { ...data, id };
+        const responseDate = (data.responseDate as unknown as firestore.Timestamp).toDate();
+        const attendanceDate = (data.attendanceDate as unknown as firestore.Timestamp).toDate();
+        return { ...data, id, responseDate, attendanceDate };
       })));
   }
 

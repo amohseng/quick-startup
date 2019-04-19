@@ -14,9 +14,9 @@
       [ngStyle.gt-xs]="getTopCornerCellOneStyle(calendarSize.SM)"
       [ngStyle.gt-sm]="getTopCornerCellOneStyle(calendarSize.MD)"
       [ngStyle.gt-md]="getTopCornerCellOneStyle(calendarSize.LG)">
-    <span *ngIf="forceXS">{{ ds.getMonthShortName(anydate) }}</span>
-    <span *ngIf="!forceXS" fxHide fxShow.xs>{{ ds.getMonthShortName(anydate) }}</span>
-    <span *ngIf="!forceXS" fxHide fxShow.gt-xs> {{ ds.getMonthLongName(anydate) }}</span>
+    <span *ngIf="forceDialogSize">{{ ds.getMonthShortName(anydate) }}</span>
+    <span *ngIf="!forceDialogSize" fxHide fxShow.xs>{{ ds.getMonthShortName(anydate) }}</span>
+    <span *ngIf="!forceDialogSize" fxHide fxShow.gt-xs> {{ ds.getMonthLongName(anydate) }}</span>
   </div>
   <div
       [ngStyle.xs]="getTopCornerCellTwoStyle(calendarSize.XS)"

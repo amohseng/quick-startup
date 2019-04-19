@@ -1,11 +1,11 @@
-export interface Comment {
+import { Topic } from './topic.model';
+
+export interface Minutes {
   id: string;
-  itemId: string;
-  topicId: string;
   meetingId: string;
   companyId: string;
   companyEmail: string;
-  description: string;
+  topics: Topic[];
   lastUpdated: Date;
   lastUpdatedBy: string;
 }

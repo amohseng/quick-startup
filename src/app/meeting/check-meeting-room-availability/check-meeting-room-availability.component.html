@@ -1,8 +1,8 @@
 <mat-dialog-content fxLayout="column">
   <app-calendar-day-view
-    clickable="false"
-    forceDialogSize="true"
-    [attendeeResponseMap]="attendeeResponseMap"
+    [clickable]="false"
+    [forceDialogSize]="true"
+    [invitationResponseMap]="invitationResponseMap"
     [isLoading]="isLoading"
     [anydate]="calendarDate"
     [meetings]="meetings">

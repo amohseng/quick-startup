@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UIService } from 'src/app/util/ui.service';
 import { DateService } from 'src/app/util/date.service';
 
-import { Attendee } from '../models/attendee.model';
+import { InvitationResponse } from '../models/invitation-response.model';
 import { CalendarView } from '../calendar/calendar-header/calendar-header.component';
 
 @Component({
@@ -23,10 +23,10 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
   currentView: CalendarView;
   calendarView = CalendarView;
   meetings: Meeting[] = [];
-  attendeeResponseMap: Map<string, string>;
+  invitationResponseMap: Map<string, string>;
 
   meetingsSubscription: Subscription;
-  attendeesSubscription: Subscription;
+  invitationResponsesSubscription: Subscription;
 
   constructor(private meetingService: MeetingService, private authService: AuthService,
               private uiService: UIService, private router: Router, private route: ActivatedRoute, private ds: DateService) { }
@@ -81,12 +81,12 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
       this.meetingsSubscription.unsubscribe();
     }
     this.meetingsSubscription = this.meetingService
-    .getMeetingsByAttendeeEmail(this.email, from, to)
+    .getMeetingsByInvitation(this.email, from, to)
     .subscribe(meetings => {
         this.meetings = meetings;
-        this.initAttendeeResponses();
+        this.initInvitationResponses();
         if (this.meetings.length > 0) {
-          this.getAttendeeResponses();
+          this.getInvitationResponses();
         } else {
           this.isLoading = false;
         }
@@ -107,12 +107,12 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
       this.meetingsSubscription.unsubscribe();
     }
     this.meetingsSubscription = this.meetingService
-    .getMeetingsByAttendeeEmail(this.email, from, to)
+    .getMeetingsByInvitation(this.email, from, to)
     .subscribe(meetings => {
         this.meetings = meetings;
-        this.initAttendeeResponses();
+        this.initInvitationResponses();
         if (this.meetings.length > 0) {
-          this.getAttendeeResponses();
+          this.getInvitationResponses();
         } else {
           this.isLoading = false;
         }
@@ -125,23 +125,23 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  initAttendeeResponses() {
-    this.attendeeResponseMap = new Map<string, string>();
+  initInvitationResponses() {
+    this.invitationResponseMap = new Map<string, string>();
     this.meetings.forEach(meeting => {
-      this.attendeeResponseMap.set(meeting.id, (meeting.organizer === this.email ? 'ACCEPTED' : 'PENDING'));
+      this.invitationResponseMap.set(meeting.id, (meeting.organizer === this.email ? 'ACCEPTED' : 'PENDING'));
     });
   }
-  getAttendeeResponses() {
+  getInvitationResponses() {
     let counter = 0;
-    if (this.attendeesSubscription) {
-      this.attendeesSubscription.unsubscribe();
+    if (this.invitationResponsesSubscription) {
+      this.invitationResponsesSubscription.unsubscribe();
     }
-    this.attendeesSubscription = this.meetingService
-      .getAttendeeForEachMeeting(this.meetings.map(meeting => meeting.id), this.email)
-      .subscribe((data: Attendee[]) => {
+    this.invitationResponsesSubscription = this.meetingService
+      .getInvitationResponseForEachMeeting(this.meetings.map(meeting => meeting.id), this.email)
+      .subscribe((data: InvitationResponse[]) => {
         counter++;
         if (data.length > 0) {
-          this.attendeeResponseMap
+          this.invitationResponseMap
               .set(data[0].meetingId, data[0].response ? 'ACCEPTED' : 'DECLINED');
         }
         if (counter === this.meetings.length) {
@@ -166,8 +166,8 @@ export class ViewCalendarComponent implements OnInit, OnDestroy {
     if (this.meetingsSubscription) {
       this.meetingsSubscription.unsubscribe();
     }
-    if (this.attendeesSubscription) {
-      this.attendeesSubscription.unsubscribe();
+    if (this.invitationResponsesSubscription) {
+      this.invitationResponsesSubscription.unsubscribe();
     }
   }
 }

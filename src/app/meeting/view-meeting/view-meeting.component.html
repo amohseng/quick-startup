@@ -4,9 +4,9 @@
     <div class="primary-color">View Meeting</div>
     <div class="spacer"></div>
     <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="responseMenu">
-      <span class="disabled-color light-button" *ngIf="!getAttendeeByEmail(email).responseDate"><mat-icon>error_outline</mat-icon></span>
-      <span class="primary-color light-button" *ngIf="getAttendeeByEmail(email).responseDate && getAttendeeByEmail(email).response"><mat-icon>event_available</mat-icon></span>
-      <span class="warn-color light-button" *ngIf="getAttendeeByEmail(email).responseDate && !getAttendeeByEmail(email).response"><mat-icon>event_busy</mat-icon></span>
+      <span class="disabled-color light-button" *ngIf="!getInvitationResponseByEmail(email).responseDate"><mat-icon>error_outline</mat-icon></span>
+      <span class="primary-color light-button" *ngIf="getInvitationResponseByEmail(email).responseDate && getInvitationResponseByEmail(email).response"><mat-icon>event_available</mat-icon></span>
+      <span class="warn-color light-button" *ngIf="getInvitationResponseByEmail(email).responseDate && !getInvitationResponseByEmail(email).response"><mat-icon>event_busy</mat-icon></span>
     </button>
     <mat-menu #responseMenu="matMenu">
       <button *ngIf="!isOrganizer" mat-menu-item (click)="accept()">
@@ -52,8 +52,8 @@
       <div class="form-field">
         <mat-chip-list #invitationsChipList>
           <ng-container *ngFor="let invitation of meeting.invitations">
-            <mat-chip *ngIf="!getAttendeeByEmail(invitation).responseDate && invitation !== meeting.organizer">{{ invitation }}</mat-chip>
-            <mat-chip *ngIf="getAttendeeByEmail(invitation).responseDate" [color]="getAttendeeByEmail(invitation).response || invitation === meeting.organizer ?'primary' : 'warn'" selected>
+            <mat-chip *ngIf="!getInvitationResponseByEmail(invitation).responseDate && invitation !== meeting.organizer">{{ invitation }}</mat-chip>
+            <mat-chip *ngIf="getInvitationResponseByEmail(invitation).responseDate" [color]="getInvitationResponseByEmail(invitation).response || invitation === meeting.organizer ?'primary' : 'warn'" selected>
               {{ invitation }}
             </mat-chip>
           </ng-container>
@@ -66,8 +66,8 @@
       <div class="form-field">
         <mat-chip-list #scribesChipList>
           <ng-container  *ngFor="let scribe of meeting.scribes">
-              <mat-chip *ngIf="!getAttendeeByEmail(scribe).responseDate && scribe !== meeting.organizer">{{ scribe }}</mat-chip>
-              <mat-chip *ngIf="getAttendeeByEmail(scribe).responseDate || scribe === meeting.organizer" [color]="getAttendeeByEmail(scribe).response || scribe === meeting.organizer ?'primary' : 'warn'" selected>{{ scribe }}</mat-chip>
+              <mat-chip *ngIf="!getInvitationResponseByEmail(scribe).responseDate && scribe !== meeting.organizer">{{ scribe }}</mat-chip>
+              <mat-chip *ngIf="getInvitationResponseByEmail(scribe).responseDate || scribe === meeting.organizer" [color]="getInvitationResponseByEmail(scribe).response || scribe === meeting.organizer ?'primary' : 'warn'" selected>{{ scribe }}</mat-chip>
           </ng-container>
         </mat-chip-list>
       </div>

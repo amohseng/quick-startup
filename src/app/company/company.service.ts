@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 
@@ -146,6 +147,14 @@ export class CompanyService {
         return data;
       }
     }));
+  }
+
+  getEmployees(employeeIds: string[]) {
+    const list = [];
+    for (const employeeId of employeeIds) {
+      list.push(this.getEmployee(employeeId));
+    }
+    return merge(...list);
   }
 
   getEmployeesByCompanyId(companyId: string) {

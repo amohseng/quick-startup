@@ -11,10 +11,11 @@ import { CalendarWeekViewComponent } from './calendar/calendar-week-view/calenda
 import { CalendarHeaderComponent } from './calendar/calendar-header/calendar-header.component';
 import { EditMeetingComponent } from './edit-meeting/edit-meeting.component';
 import { ViewMeetingComponent } from './view-meeting/view-meeting.component';
-import { MinutesComponent } from './minutes/minutes.component';
 import { SelectUsersComponent } from './select-users/select-users.component';
 import { CalendarDayViewComponent } from './calendar/calendar-day-view/calendar-day-view.component';
 import { CheckMeetingRoomAvailabilityComponent } from './check-meeting-room-availability/check-meeting-room-availability.component';
+import { ViewMinutesComponent } from './view-minutes/view-minutes.component';
+import { EditMinutesComponent } from './edit-minutes/edit-minutes.component';
 
 
 @NgModule({
@@ -25,10 +26,11 @@ import { CheckMeetingRoomAvailabilityComponent } from './check-meeting-room-avai
     CalendarHeaderComponent,
     EditMeetingComponent,
     ViewMeetingComponent,
-    MinutesComponent,
     SelectUsersComponent,
     CalendarDayViewComponent,
-    CheckMeetingRoomAvailabilityComponent
+    CheckMeetingRoomAvailabilityComponent,
+    ViewMinutesComponent,
+    EditMinutesComponent
   ],
   imports: [
     CommonModule,

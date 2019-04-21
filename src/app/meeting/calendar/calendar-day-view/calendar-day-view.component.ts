@@ -8,7 +8,7 @@ export enum CalendarSize {
   MD = 'MD',
   LG = 'LG'
 }
-export enum AttendeeResponse {
+export enum InvitationResponse {
   Accepted = 'ACCEPTED',
   Declined = 'DECLINED',
   Pending = 'PENDING'
@@ -21,14 +21,14 @@ export enum AttendeeResponse {
 })
 export class CalendarDayViewComponent implements OnInit, OnChanges {
   calendarSize = CalendarSize;
-  attendeeResponse = AttendeeResponse;
+  invitationResponse = InvitationResponse;
 
   @Input() forceDialogSize = false;
   @Input() anydate: Date;
   @Input() meetings: Meeting[];
   @Input() clickable: boolean;
   @Input() isLoading: boolean;
-  @Input() attendeeResponseMap: Map<string, string>;
+  @Input() invitationResponseMap: Map<string, string>;
   @Output() meetingClicked = new EventEmitter<Meeting>();
   @Output() slotDoubleClicked = new EventEmitter<{meetingDate: Date, startTime: number, endTime: number}>();
 
@@ -349,7 +349,7 @@ export class CalendarDayViewComponent implements OnInit, OnChanges {
       ['flex-flow'] : 'column',
       ['cursor'] : this.clickable ? 'pointer' : '',
       ['text-decoration'] : meeting.canceled ? 'line-through' : '',
-      ['opacity']: meeting.canceled || this.attendeeResponseMap.get(meeting.id) !== AttendeeResponse.Accepted ? '0.4' : '1'
+      ['opacity']: meeting.canceled || this.invitationResponseMap.get(meeting.id) !== InvitationResponse.Accepted ? '0.4' : '1'
     };
   }
 }

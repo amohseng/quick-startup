@@ -16,7 +16,7 @@ export class CheckMeetingRoomAvailabilityComponent implements OnInit {
   calendarDate: Date;
   meetingRoomId = '';
   meetings: Meeting[] = [];
-  attendeeResponseMap: Map<string, string>;
+  invitationResponseMap: Map<string, string>;
   meetingsSubscription: Subscription;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private meetingService: MeetingService,
   private uiService: UIService, private ds: DateService) { }
@@ -38,7 +38,7 @@ export class CheckMeetingRoomAvailabilityComponent implements OnInit {
     .getMeetingsByMeetingRoomId(this.meetingRoomId, from, to)
     .subscribe(meetings => {
         this.meetings = meetings;
-        this.initAttendeeResponses();
+        this.initInvitationResponses();
         this.isLoading = false;
     },
     error => {
@@ -48,10 +48,10 @@ export class CheckMeetingRoomAvailabilityComponent implements OnInit {
     });
   }
 
-  initAttendeeResponses() {
-    this.attendeeResponseMap = new Map<string, string>();
+  initInvitationResponses() {
+    this.invitationResponseMap = new Map<string, string>();
     for (const meeting of this.meetings) {
-      this.attendeeResponseMap.set(meeting.id, 'ACCEPTED');
+      this.invitationResponseMap.set(meeting.id, 'ACCEPTED');
     }
   }
 }

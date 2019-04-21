@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
+import { merge } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { firestore } from 'firebase';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 import { Meeting } from './models/meeting.model';
-import { firestore } from 'firebase';
-import { Attendee } from './models/attendee.model';
-import { merge } from 'rxjs';
-import { Topic } from './models/topic.model';
+import { InvitationResponse } from './models/invitation-response.model';
+import { Minutes } from './models/minutes.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -33,21 +34,32 @@ export class MeetingService {
     });
   }
 
-  saveAttendee(attendee: Attendee, isNew: boolean): Promise<string> {
-    if (isNew) {
-      attendee.id = this.db.createId();
-    }
-    return this.db.collection('attendees').doc(attendee.id).set(attendee)
+  saveMinutes(minutes: Minutes): Promise<string> {
+    return this.db.collection('minutes').doc(minutes.id).set(minutes)
     .then(() => {
-      return Promise.resolve(attendee.id);
+      return Promise.resolve(minutes.id);
     })
     .catch(error => {
       console.log(error);
-      throw new Error('Oops! Attendee new status not saved');
+      throw new Error('Oops! Meeting minutes not saved');
     });
   }
 
-  getMeetingsByAttendeeEmail(email: string, from: Date, to: Date) {
+  saveInvitationResponse(invitationResponse: InvitationResponse, isNew: boolean): Promise<string> {
+    if (isNew) {
+      invitationResponse.id = this.db.createId();
+    }
+    return this.db.collection('invitationResponses').doc(invitationResponse.id).set(invitationResponse)
+    .then(() => {
+      return Promise.resolve(invitationResponse.id);
+    })
+    .catch(error => {
+      console.log(error);
+      throw new Error('Oops! Invitation response not saved');
+    });
+  }
+
+  getMeetingsByInvitation(email: string, from: Date, to: Date) {
     return this.db.collection('meetings', ref => ref.where('invitations', 'array-contains', email)
                                                     .where('start', '>=', from)
                                                     .where('start', '<=', to))
@@ -89,35 +101,46 @@ export class MeetingService {
     }));
   }
 
-  getAttendee(meetingId: string, email: string) {
-    return this.db.collection('attendees', ref => ref.where('meetingId', '==', meetingId)
+  getMinutesById(minutesId: string) {
+    return this.db.doc<Minutes>(`minutes/${minutesId}`).valueChanges()
+    .pipe(map(data => {
+      if (data) {
+        const id = minutesId;
+        const lastUpdated = (data.lastUpdated as unknown as firestore.Timestamp).toDate();
+        return { ...data, id, lastUpdated };
+      } else {
+        return data;
+      }
+    }));
+  }
+
+  getInvitationResponse(meetingId: string, email: string) {
+    return this.db.collection('invitationResponses', ref => ref.where('meetingId', '==', meetingId)
                                                     .where('email', '==', email))
       .snapshotChanges()
       .pipe(map(actions => actions.map(action => {
-        const data = action.payload.doc.data() as Attendee;
+        const data = action.payload.doc.data() as InvitationResponse;
         const id = action.payload.doc.id;
         const responseDate = (data.responseDate as unknown as firestore.Timestamp).toDate();
-        const attendanceDate = (data.attendanceDate as unknown as firestore.Timestamp).toDate();
-        return { ...data, id, responseDate, attendanceDate };
+        return { ...data, id, responseDate };
       })));
   }
 
-  getAllAttendees(meetingId: string) {
-    return this.db.collection('attendees', ref => ref.where('meetingId', '==', meetingId))
+  getAllInvitationResponses(meetingId: string) {
+    return this.db.collection('invitationResponses', ref => ref.where('meetingId', '==', meetingId))
       .snapshotChanges()
       .pipe(map(actions => actions.map(action => {
-        const data = action.payload.doc.data() as Attendee;
+        const data = action.payload.doc.data() as InvitationResponse;
         const id = action.payload.doc.id;
         const responseDate = (data.responseDate as unknown as firestore.Timestamp).toDate();
-        const attendanceDate = (data.attendanceDate as unknown as firestore.Timestamp).toDate();
-        return { ...data, id, responseDate, attendanceDate };
+        return { ...data, id, responseDate };
       })));
   }
 
-  getAttendeeForEachMeeting(meetingIds: string[], email: string) {
+  getInvitationResponseForEachMeeting(meetingIds: string[], email: string) {
     const list = [];
     for (const meetingId of meetingIds) {
-      list.push(this.getAttendee(meetingId, email));
+      list.push(this.getInvitationResponse(meetingId, email));
     }
     return merge(...list);
   }

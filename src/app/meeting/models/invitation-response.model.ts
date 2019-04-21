@@ -1,9 +1,7 @@
-export interface Attendee {
+export interface InvitationResponse {
   id: string;
   meetingId: string;
   email: string;
   response: boolean;
   responseDate: Date;
-  attendance: boolean;
-  attendanceDate: Date;
 }

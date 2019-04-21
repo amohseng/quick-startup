@@ -4,7 +4,8 @@ import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
 import { ManageActionsComponent } from './manage-actions/manage-actions.component';
 import { EditMeetingComponent } from './edit-meeting/edit-meeting.component';
 import { ViewMeetingComponent } from './view-meeting/view-meeting.component';
-import { MinutesComponent } from './minutes/minutes.component';
+import { ViewMinutesComponent } from './view-minutes/view-minutes.component';
+import { EditMinutesComponent } from './edit-minutes/edit-minutes.component';
 
 const routes: Routes = [
   {path: 'calendar', component: ViewCalendarComponent},
@@ -12,7 +13,8 @@ const routes: Routes = [
   {path: 'new', component: EditMeetingComponent},
   {path: ':id', component: ViewMeetingComponent},
   {path: ':id/edit', component: EditMeetingComponent},
-  {path: ':id/minutes', component: MinutesComponent}
+  {path: ':id/minutes', component: ViewMinutesComponent},
+  {path: ':id/minutes/edit', component: EditMinutesComponent}
 ];
 
 @NgModule({

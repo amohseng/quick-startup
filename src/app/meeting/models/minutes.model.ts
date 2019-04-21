@@ -6,6 +6,7 @@ export interface Minutes {
   companyId: string;
   companyEmail: string;
   topics: Topic[];
+  attendance: string[];
   lastUpdated: Date;
   lastUpdatedBy: string;
 }

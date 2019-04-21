@@ -1,0 +1,18 @@
+<section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
+  <form #f="ngForm" (ngSubmit)="saveMinutes(f)">
+      <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+          <mat-icon color="primary" svgIcon="outline-description"></mat-icon>
+          <div class="primary-color">Edit Minutes</div>
+          <div class="spacer"></div>
+          <button mat-icon-button color="primary" (click)="cancel()">
+            <mat-icon svgIcon="outline-cancel"></mat-icon>
+          </button>
+          <button mat-icon-button type="submit" [disabled]="!f.valid" color="primary">
+            <mat-icon svgIcon="outline-send"></mat-icon>
+          </button>
+        </div>
+        <div *ngIf="!isLoading" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+        </div>
+  </form>
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+</section>

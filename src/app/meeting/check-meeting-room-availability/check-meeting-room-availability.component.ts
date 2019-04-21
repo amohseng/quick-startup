@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { MeetingService } from '../meeting.service';
 import { UIService } from 'src/app/util/ui.service';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './check-meeting-room-availability.component.html',
   styleUrls: ['./check-meeting-room-availability.component.css']
 })
-export class CheckMeetingRoomAvailabilityComponent implements OnInit {
+export class CheckMeetingRoomAvailabilityComponent implements OnInit, OnDestroy {
   isLoading = false;
   calendarDate: Date;
   meetingRoomId = '';
@@ -52,6 +52,12 @@ export class CheckMeetingRoomAvailabilityComponent implements OnInit {
     this.invitationResponseMap = new Map<string, string>();
     for (const meeting of this.meetings) {
       this.invitationResponseMap.set(meeting.id, 'ACCEPTED');
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.meetingsSubscription) {
+      this.meetingsSubscription.unsubscribe();
     }
   }
 }

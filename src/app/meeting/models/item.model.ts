@@ -5,7 +5,6 @@ export enum ItemType  {
 
 export interface Item {
   id: string;
-  itemNumber: number;
   description: string;
   type: ItemType;
   dueDate?: Date;

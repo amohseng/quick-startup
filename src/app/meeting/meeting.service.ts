@@ -35,6 +35,7 @@ export class MeetingService {
   }
 
   saveMinutes(minutes: Minutes): Promise<string> {
+    minutes.id = this.db.createId();
     return this.db.collection('minutes').doc(minutes.id).set(minutes)
     .then(() => {
       return Promise.resolve(minutes.id);
@@ -101,17 +102,15 @@ export class MeetingService {
     }));
   }
 
-  getMinutesById(minutesId: string) {
-    return this.db.doc<Minutes>(`minutes/${minutesId}`).valueChanges()
-    .pipe(map(data => {
-      if (data) {
-        const id = minutesId;
+  getMinutesByMeetingId(meetingId: string) {
+    return this.db.collection('minutes', ref => ref.where('meetingId', '==', meetingId).orderBy('lastUpdated'))
+      .snapshotChanges()
+      .pipe(map(actions => actions.map(action => {
+        const data = action.payload.doc.data() as Minutes;
+        const id = action.payload.doc.id;
         const lastUpdated = (data.lastUpdated as unknown as firestore.Timestamp).toDate();
         return { ...data, id, lastUpdated };
-      } else {
-        return data;
-      }
-    }));
+      })));
   }
 
   getInvitationResponse(meetingId: string, email: string) {

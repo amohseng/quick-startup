@@ -13,7 +13,7 @@ const routes: Routes = [
   {path: 'new', component: EditMeetingComponent},
   {path: ':id', component: ViewMeetingComponent},
   {path: ':id/edit', component: EditMeetingComponent},
-  {path: ':id/minutes', component: ViewMinutesComponent},
+  {path: ':id/minutes', component: EditMinutesComponent},
   {path: ':id/minutes/edit', component: EditMinutesComponent}
 ];
 

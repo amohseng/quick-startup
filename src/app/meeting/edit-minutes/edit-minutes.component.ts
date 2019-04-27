@@ -14,7 +14,6 @@ import { DateService } from 'src/app/util/date.service';
 import { ProfileData } from 'src/app/auth/models/profile-data.model';
 import { Meeting } from '../models/meeting.model';
 import { Minutes } from '../models/minutes.model';
-import { InvitationResponse } from '../models/invitation-response.model';
 import { Employee } from 'src/app/company/models/employee.model';
 import { Company } from 'src/app/company/models/company.model';
 
@@ -24,6 +23,8 @@ import { Company } from 'src/app/company/models/company.model';
   styleUrls: ['./edit-minutes.component.css']
 })
 export class EditMinutesComponent implements OnInit, OnDestroy {
+  newItemActionByDefaultValue = 'none';
+  newItemDueDateDefaultValue = new Date();
   isLoading = false;
   isWriting = false;
   email = '';
@@ -34,19 +35,20 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
   companies: Company[];
   allMinutesRevisions: Minutes[] = [];
   minutes: Minutes;
-  invitationResponses: InvitationResponse[];
   editMinutesLine = null;
+  openTopicItems = null;
 
-  totalResourcesToFetch = 5;
+  totalResourcesToFetch = 4;
   fetchedResources = 0;
   meetingSubscription: Subscription;
   employeesSubscription: Subscription;
   companiesSubscription: Subscription;
   minutesSubscription: Subscription;
-  invitationResponsesSubscription: Subscription;
 
   @ViewChild('newTopicRef') newTopicRef: ElementRef;
   @ViewChild('updateTopicRef') updateTopicRef: ElementRef;
+  @ViewChild('newItemRef') newItemRef: ElementRef;
+  @ViewChild('updateItemRef') updateItemRef: ElementRef;
 
   constructor(private meetingService: MeetingService, private companyService: CompanyService,
     private authService: AuthService, private uiService: UIService, public ds: DateService,
@@ -78,7 +80,6 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
         this.getMinutes();
         this.getEmployees();
         this.getCompanies();
-        this.getInvitationResponses();
       } else {
         this.uiService.showSnackBar('Oops, meeting data not found', null, 3000);
         this.router.navigate(['/']);
@@ -173,26 +174,6 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     });
   }
 
-  getInvitationResponses() {
-    if (this.invitationResponsesSubscription) {
-      this.invitationResponsesSubscription.unsubscribe();
-    }
-    this.invitationResponsesSubscription = this.meetingService
-      .getAllInvitationResponses(this.meetingId).pipe(take(1)).subscribe(invitationResponses => {
-      this.invitationResponses = invitationResponses;
-      this.fetchedResources += 1;
-      if (this.fetchedResources >= this.totalResourcesToFetch) {
-        this.isLoading = false;
-      }
-    },
-    error => {
-      console.log(error);
-      this.isLoading = false;
-      this.uiService.showSnackBar(error, null, 3000);
-      this.router.navigate(['/']);
-    });
-  }
-
   toggleAttendance(invitation: string) {
     const index = this.minutes.attendance.indexOf(invitation);
     if (index < 0) {
@@ -254,6 +235,20 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     this.updateTopicRef.nativeElement.focus();
   }
 
+  editItem(itemId: string) {
+    this.editMinutesLine = itemId;
+    this.changeDetector.detectChanges();
+    this.updateItemRef.nativeElement.focus();
+  }
+
+  toggleOpenTopicItems(topicId: string) {
+    if (this.openTopicItems === topicId) {
+      this.openTopicItems = null;
+    } else {
+      this.openTopicItems = topicId;
+    }
+  }
+
   addTopic(newTopicInput: FormControl) {
     if (newTopicInput.valid) {
       this.minutes.topics.push({
@@ -266,9 +261,33 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     this.newTopicRef.nativeElement.focus();
   }
 
+  addItem(topicId: string, newItemInput: FormControl, newItemActionBySelect: FormControl, newItemDueDateInput: FormControl) {
+    const topicIndex = this.minutes.topics.findIndex((topic) => {
+      return topic.id === topicId;
+    });
+    if (topicIndex >= 0 && newItemInput.valid && newItemActionBySelect.valid && newItemDueDateInput.valid) {
+      this.minutes.topics[topicIndex].items.push({
+        id: this.meetingService.getDBId(),
+        description: newItemInput.value,
+        actionBy: newItemActionBySelect.value,
+        dueDate: new Date(newItemDueDateInput.value)
+      });
+    }
+    newItemInput.reset();
+    newItemActionBySelect.reset(this.newItemActionByDefaultValue);
+    newItemDueDateInput.reset(this.newItemDueDateDefaultValue);
+    this.newItemRef.nativeElement.focus();
+  }
+
   onNewTopicInputBlur(newTopicInput: FormControl) {
     if (!newTopicInput.valid) {
       newTopicInput.reset();
+    }
+  }
+
+  onNewItemInputBlur(newItemInput: FormControl) {
+    if (!newItemInput.valid) {
+      newItemInput.reset();
     }
   }
 
@@ -278,13 +297,33 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateTopic(topicId: string, topicInput: FormControl) {
-    if (topicInput.valid) {
+  updateTopic(topicId: string, updateTopicInput: FormControl) {
+    if (updateTopicInput.valid) {
       const index = this.minutes.topics.findIndex((topic) => {
         return topic.id === topicId;
       });
       if (index >= 0) {
-        this.minutes.topics[index].description = topicInput.value;
+        this.minutes.topics[index].description = updateTopicInput.value;
+      }
+    }
+    this.editMinutesLine = null;
+  }
+
+  updateItem(topicId: string, itemId: string, updateItemInput: FormControl,
+    updateItemActionBySelect: FormControl, updateItemDueDateInput: FormControl) {
+    if (updateItemInput.valid) {
+      const topicIndex = this.minutes.topics.findIndex((topic) => {
+        return topic.id === topicId;
+      });
+      if (topicIndex >= 0) {
+        const itemIndex = this.minutes.topics[topicIndex].items.findIndex((item) => {
+          return item.id === itemId;
+        });
+        if (itemIndex >= 0) {
+          this.minutes.topics[topicIndex].items[itemIndex].description = updateItemInput.value;
+          this.minutes.topics[topicIndex].items[itemIndex].actionBy = updateItemActionBySelect.value;
+          this.minutes.topics[topicIndex].items[itemIndex].dueDate = new Date(updateItemDueDateInput.value);
+        }
       }
     }
     this.editMinutesLine = null;
@@ -305,6 +344,20 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     }
   }
 
+  deleteItem(topicId: string, itemId: string) {
+    const topicIndex = this.minutes.topics.findIndex((topic) => {
+      return topic.id === topicId;
+    });
+    if (topicIndex >= 0) {
+      const itemIndex = this.minutes.topics[topicIndex].items.findIndex((item) => {
+        return item.id === itemId;
+      });
+      if (itemIndex >= 0) {
+        this.minutes.topics[topicIndex].items.splice(itemIndex, 1);
+      }
+    }
+  }
+
   topicMoveUp(topicIndex: number) {
     if (topicIndex > 0) {
       const newIndex = topicIndex - 1;
@@ -312,10 +365,24 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     }
   }
 
+  itemMoveUp(topicIndex: number, itemIndex: number) {
+    if (itemIndex > 0) {
+      const newIndex = itemIndex - 1;
+      this.minutes.topics[topicIndex].items = this.lineMove([...this.minutes.topics[topicIndex].items], itemIndex, newIndex);
+    }
+  }
+
   topicMoveDown(topicIndex: number) {
     if (topicIndex < this.minutes.topics.length - 1) {
       const newIndex = topicIndex + 1;
       this.minutes.topics = this.lineMove([...this.minutes.topics], topicIndex, newIndex);
+    }
+  }
+
+  itemMoveDown(topicIndex: number, itemIndex: number) {
+    if (itemIndex < this.minutes.topics[topicIndex].items.length - 1) {
+      const newIndex = itemIndex + 1;
+      this.minutes.topics[topicIndex].items = this.lineMove([...this.minutes.topics[topicIndex].items], itemIndex, newIndex);
     }
   }
 
@@ -349,9 +416,6 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     }
     if (this.companiesSubscription) {
       this.companiesSubscription.unsubscribe();
-    }
-    if (this.invitationResponsesSubscription) {
-      this.invitationResponsesSubscription.unsubscribe();
     }
   }
 

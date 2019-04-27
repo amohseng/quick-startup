@@ -109,7 +109,14 @@ export class MeetingService {
         const data = action.payload.doc.data() as Minutes;
         const id = action.payload.doc.id;
         const lastUpdated = (data.lastUpdated as unknown as firestore.Timestamp).toDate();
-        return { ...data, id, lastUpdated };
+        const topics = data.topics.map(topic => {
+          topic.items = topic.items.map(item => {
+            item.dueDate = (item.dueDate as unknown as firestore.Timestamp).toDate();
+            return item;
+          });
+          return topic;
+        });
+        return { ...data, id, topics, lastUpdated };
       })));
   }
 

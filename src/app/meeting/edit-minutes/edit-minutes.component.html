@@ -1,7 +1,8 @@
 <section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
   <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
     <mat-icon color="primary" svgIcon="outline-description"></mat-icon>
-    <div class="primary-color">Edit Minutes</div>
+    <div *ngIf="allMinutesRevisions.length === 0" class="primary-color">Create Meeting Minutes</div>
+    <div *ngIf="allMinutesRevisions.length > 0" class="primary-color">Update Meeting Minutes</div>
     <div class="spacer"></div>
     <button mat-icon-button color="primary" (click)="cancel()">
       <mat-icon svgIcon="outline-cancel"></mat-icon>
@@ -63,10 +64,10 @@
         <span class="primary-dark-color"><strong>Description</strong></span>
       </div>
     </div>
+    <!-- END: Minutes Header Line -->
     <!-- Minutes Topics -->
     <ng-container *ngFor="let topic of minutes.topics; index as topicIndex">
-      <!-- For Each Minutes Topic -->
-      <div *ngIf="editMinutesLine === topic.id" class="minutes-line primary-dark-border-bottom">
+      <div *ngIf="editMinutesLine === topic.id" class="minutes-line-edit primary-dark-border-bottom">
         <span class="minutes-line-number primary-dark-color"><strong>{{ topicIndex + 1 }}.</strong></span>
         <mat-form-field class="form-field">
           <input type="text" autocomplete="off" matInput (keypress)="onUpdateTopicInputKeyPress($event, topic.id, updateTopicInput)" [ngModel]="topic.description" required #updateTopicRef #updateTopicInput="ngModel">
@@ -74,13 +75,12 @@
         <button mat-icon-button color="primary" (click)="updateTopic(topic.id, updateTopicInput)"><mat-icon>done</mat-icon></button>
         <button mat-icon-button color="primary" (click)="editMinutesLine = null"><mat-icon>close</mat-icon></button>
       </div>
-      <div *ngIf="editMinutesLine !== topic.id" class="minutes-line primary-dark-border-bottom">
+      <div *ngIf="editMinutesLine !== topic.id" class="minutes-line primary-dark-border-bottom clickable" (click)="toggleOpenTopicItems(topic.id)">
         <span class="minutes-line-number primary-dark-color"><strong>{{ topicIndex + 1 }}.</strong></span>
         <div class="form-field">
           <span class="primary-dark-color"><strong>{{ topic.description }}</strong></span>
         </div>
-
-        <button mat-icon-button [matMenuTriggerFor]="actionMenu"><mat-icon color="primary">more_vert</mat-icon></button>
+        <button mat-icon-button [matMenuTriggerFor]="actionMenu" color="primary" (click)="$event.stopPropagation();" [disabled]="openTopicItems !== null"><mat-icon>more_vert</mat-icon></button>
         <mat-menu #actionMenu="matMenu">
           <button mat-menu-item (click)="editTopic(topic.id)"><mat-icon color="primary" svgIcon="outline-edit"></mat-icon><span class="primary-color">Edit</span></button>
           <button mat-menu-item (click)="deleteTopic(topic.id)"><mat-icon color="primary">delete_outline</mat-icon><span class="primary-color">Delete</span></button>
@@ -88,9 +88,95 @@
           <button mat-menu-item *ngIf="topicIndex < minutes.topics.length - 1" (click)="topicMoveDown(topicIndex)"><mat-icon color="primary">arrow_downward</mat-icon><span class="primary-color">Move Down</span></button>
         </mat-menu>
       </div>
+      <!-- Topic Items -->
+      <ng-container *ngIf="openTopicItems === topic.id">
+        <ng-container *ngFor="let item of topic.items; index as itemIndex">
+          <ng-container *ngIf="editMinutesLine === item.id">
+            <div class="minutes-line-edit">
+              <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
+              <mat-form-field class="form-field">
+                <textarea matInput [ngModel]="item.description" required #updateItemRef #updateItemInput="ngModel"></textarea>
+              </mat-form-field>
+              <button mat-icon-button color="primary" [disabled]="!(updateItemInput.valid && updateItemActionBySelect.valid && updateItemDueDateInput.valid)" (click)="updateItem(topic.id, item.id, updateItemInput, updateItemActionBySelect, updateItemDueDateInput)"><mat-icon>done</mat-icon></button>
+              <button mat-icon-button color="primary" (click)="editMinutesLine = null"><mat-icon>close</mat-icon></button>
+            </div>
+            <div class="minutes-line-edit">
+              <span class="minutes-line-number primary-dark-color"></span>
+              <mat-form-field>
+                <mat-select placeholder="Action By" [ngModel]="item.actionBy" name="updateItemActionBy" required #updateItemActionBySelect="ngModel">
+                  <mat-option value="none">
+                    None
+                  </mat-option>
+                  <mat-option *ngFor="let invitation of meeting.invitations" [value]="invitation">
+                    {{getDisplayName(invitation)}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="minutes-line-edit primary-dark-border-bottom">
+              <span class="minutes-line-number primary-dark-color"></span>
+              <mat-form-field>
+                <input matInput [matDatepicker]="updateItemDueDatePicker" placeholder="Due Date"  [ngModel]="item.dueDate" required name="updateItemDueDate" #updateItemDueDateInput="ngModel">
+                <mat-datepicker-toggle matSuffix [for]="updateItemDueDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #updateItemDueDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </ng-container>
+          <div *ngIf="editMinutesLine !== item.id" class="minutes-line primary-dark-border-bottom">
+            <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
+            <div class="form-field">
+              <span class="primary-dark-color">{{ item.description }}</span>
+              <br *ngIf="item.actionBy !== 'none'">
+              <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</span>
+              <br *ngIf="item.actionBy !== 'none'">
+              <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</span>
+            </div>
+            <button mat-icon-button [matMenuTriggerFor]="actionMenu" color="primary"><mat-icon>more_vert</mat-icon></button>
+            <mat-menu #actionMenu="matMenu">
+              <button mat-menu-item (click)="editItem(item.id)"><mat-icon color="primary" svgIcon="outline-edit"></mat-icon><span class="primary-color">Edit</span></button>
+              <button mat-menu-item (click)="deleteItem(topic.id, item.id)"><mat-icon color="primary">delete_outline</mat-icon><span class="primary-color">Delete</span></button>
+              <button mat-menu-item *ngIf="itemIndex > 0" (click)="itemMoveUp(topicIndex, itemIndex)"><mat-icon color="primary">arrow_upward</mat-icon><span class="primary-color">Move Up</span></button>
+              <button mat-menu-item *ngIf="itemIndex < topic.items.length - 1" (click)="itemMoveDown(topicIndex, itemIndex)"><mat-icon color="primary">arrow_downward</mat-icon><span class="primary-color">Move Down</span></button>
+            </mat-menu>
+          </div>
+        </ng-container>
+        <!-- New Item-->
+        <div class="minutes-line-edit">
+          <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ topic.items.length + 1 }}.</span>
+          <mat-form-field class="form-field">
+            <textarea matInput placeholder="Add New Item" (blur)="onNewItemInputBlur(newItemInput)" ngModel required #newItemRef #newItemInput="ngModel"></textarea>
+          </mat-form-field>
+          <button type="button" mat-icon-button color="primary" [disabled]="!(newItemInput.valid && newItemActionBySelect.valid && newItemDueDateInput.valid)" (click)="addItem(topic.id, newItemInput, newItemActionBySelect, newItemDueDateInput)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <div class="minutes-line-edit">
+          <span class="minutes-line-number primary-dark-color"></span>
+          <mat-form-field>
+            <mat-select placeholder="Action By" [ngModel]="newItemActionByDefaultValue" required #newItemActionBySelect="ngModel">
+              <mat-option value="none">
+                None
+              </mat-option>
+              <mat-option *ngFor="let invitation of meeting.invitations" [value]="invitation">
+                {{getDisplayName(invitation)}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="minutes-line-edit primary-dark-border-bottom">
+          <span class="minutes-line-number primary-dark-color"></span>
+          <mat-form-field>
+            <input matInput [matDatepicker]="newItemDueDatePicker" placeholder="Due Date"  [ngModel]="newItemDueDateDefaultValue" required #newItemDueDateInput="ngModel">
+            <mat-datepicker-toggle matSuffix [for]="newItemDueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #newItemDueDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <!-- END: New Item-->
+      </ng-container>
+      <!-- END: Topic Items -->
     </ng-container>
-    <!-- New Minutes Topic-->
-    <div class="minutes-line">
+    <!-- New Topic-->
+    <div class="minutes-line-edit primary-dark-border-bottom" *ngIf="openTopicItems === null">
       <span class="minutes-line-number primary-dark-color"><strong>{{ this.minutes.topics.length + 1 }}.</strong></span>
       <mat-form-field class="form-field">
           <input type="text" autocomplete="off" matInput placeholder="Add New Topic" (keypress)="onNewTopicInputKeyPress($event, newTopicInput)" (blur)="onNewTopicInputBlur(newTopicInput)" ngModel required #newTopicRef #newTopicInput="ngModel">
@@ -99,6 +185,9 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
+    <!-- END: New Topic-->
+    <!-- END: Minutes Topics -->
+    <div class="minutes-line"></div>
   </div>
   <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 </section>

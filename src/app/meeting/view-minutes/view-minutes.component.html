@@ -1,3 +1,103 @@
-<p>
-  view-minutes works!
-</p>
+<section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
+  <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <mat-icon color="primary" svgIcon="outline-description"></mat-icon>
+    <div class="primary-color">Meeting Minutes</div>
+    <div class="spacer"></div>
+    <button mat-icon-button color="primary" (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-icon-button type="button" color="primary" [disabled]="!isScribe" (click)="editMinutes()">
+      <mat-icon svgIcon="outline-edit"></mat-icon>
+    </button>
+  </div>
+  <div *ngIf="!isLoading && !minutes" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div ngClass="form-item">
+      <mat-icon color="accent">warning</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div ngClass="form-field">
+        <span class="subject primary-color">Minutes of this meeting has not been created yet.</span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!isLoading && minutes" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div ngClass="form-item">
+      <mat-icon color="primary">event_note</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div ngClass="form-field">
+        <span class="subject primary-color">{{ meeting.subject }} (Rev. {{ allMinutesRevisions.length - 1 }})</span>
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary" svgIcon="outline-meeting_room"></mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div>
+        {{meeting.meetingRoom.name}}, {{meeting.location.name }}
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary">today</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div>
+        {{meeting.start | date: 'longDate'}}
+      </div>
+    </div>
+    <div ngClass="form-item">
+      <mat-icon color="primary">access_time</mat-icon>
+      <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <div>
+        {{ds.getFromTwelveHoursEveryHalf(meeting.start).text}} - {{ds.getFromTwelveHoursEveryHalf(meeting.end).text}}
+      </div>
+    </div>
+    <mat-divider ngClass="primary-light-border-top"></mat-divider>
+    <div ngClass="form-item">
+      <mat-icon color="primary">people_outline</mat-icon>
+      <span>&nbsp;</span>
+      <div class="form-field">
+        <mat-chip-list #invitationsChipList>
+          <ng-container *ngFor="let invitation of meeting.invitations">
+            <mat-chip [disableRipple]="true" class="primary-dark-color transparent-background">
+              <mat-icon *ngIf="checkAttendance(invitation)" color="primary" svgIcon="outline-check_box"></mat-icon>
+              <mat-icon *ngIf="!checkAttendance(invitation)" color="primary">check_box_outline_blank</mat-icon>
+              {{ getDisplayName(invitation) }}
+            </mat-chip>
+          </ng-container>
+        </mat-chip-list>
+      </div>
+    </div>
+    <mat-divider ngClass="accent-dark-border-top"></mat-divider>
+    <!-- Minutes Header Line -->
+    <div class="minutes-line primary-dark-border-bottom primary-light-background">
+      <span class="minutes-line-number primary-dark-color"><strong>No.</strong></span>
+      <div class="form-field">
+        <span class="primary-dark-color"><strong>Description</strong></span>
+      </div>
+    </div>
+    <!-- END: Minutes Header Line -->
+    <!-- Minutes Topics -->
+    <ng-container *ngFor="let topic of minutes.topics; index as topicIndex">
+      <div class="minutes-line primary-dark-border-bottom">
+        <span class="minutes-line-number primary-dark-color"><strong>{{ topicIndex + 1 }}.</strong></span>
+        <div class="form-field">
+          <span class="primary-dark-color"><strong>{{ topic.description }}</strong></span>
+        </div>
+      </div>
+      <!-- Topic Items -->
+      <ng-container *ngFor="let item of topic.items; index as itemIndex">
+        <div class="minutes-line primary-dark-border-bottom">
+          <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
+          <div class="form-field">
+            <span class="primary-dark-color">{{ item.description }}</span>
+            <br *ngIf="item.actionBy !== 'none'">
+            <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</span>
+            <br *ngIf="item.actionBy !== 'none'">
+            <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</span>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+      <!-- END: Topic Items -->
+    <!-- END: Minutes Topics -->
+    <div class="minutes-line"></div>
+  </div>
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+</section>

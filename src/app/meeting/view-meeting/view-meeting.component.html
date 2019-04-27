@@ -1,7 +1,7 @@
 <section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
   <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
     <mat-icon color="primary">date_range</mat-icon>
-    <div class="primary-color">View Meeting</div>
+    <div class="primary-color">Meeting Details</div>
     <div class="spacer"></div>
     <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="responseMenu">
       <span class="disabled-color light-button" *ngIf="!getInvitationResponseByEmail(email).responseDate"><mat-icon>error_outline</mat-icon></span>

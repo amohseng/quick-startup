@@ -84,11 +84,14 @@
   margin-right: 5px;
 }
 
-
 .form-field {
   flex: 1 1 auto;
   word-break: break-word;
+  white-space: pre-line;
+}
 
+.preserve-linebreak {
+  white-space: pre-line;
 }
 
 .form-field-md {
@@ -259,3 +262,4 @@
 .transparent-separator {
   margin-top: 5px;
 }
+

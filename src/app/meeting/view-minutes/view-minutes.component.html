@@ -83,16 +83,42 @@
       </div>
       <!-- Topic Items -->
       <ng-container *ngFor="let item of topic.items; index as itemIndex">
-        <div class="minutes-line primary-dark-border-bottom">
+        <div class="minutes-line">
           <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
           <div class="form-field">
-            <span class="primary-dark-color">{{ item.description }}</span>
-            <br *ngIf="item.actionBy !== 'none'">
-            <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</span>
-            <br *ngIf="item.actionBy !== 'none'">
-            <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</span>
+            <div class="primary-dark-color">{{ item.description }}</div>
+            <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</div>
+            <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</div>
+            <span class="primary-dark-color font-sm"> {{ getCommentsByItemId(item.id).length }} Comments </span>
+            <button mat-button color="primary" (click)="toggleShowItemComments(item.id)"><mat-icon svgIcon="outline-add_comment"></mat-icon>Comment</button>
           </div>
         </div>
+        <ng-container *ngIf="showItemComments===item.id">
+          <div class="minutes-line-edit primary-light-border-bottom"></div>
+          <div class="comment-line">
+            <span class="minutes-line-number primary-dark-color"></span>
+            <img class="avatar" [src]="getPhotoURL(email)" [alt]="getDisplayName(email)">
+            <mat-form-field class="form-field">
+              <textarea matInput [matTextareaAutosize]="true" placeholder="Add Comment" (blur)="onCommentInputBlur(commentInput)" ngModel required #commentRef #commentInput="ngModel"></textarea>
+          </mat-form-field>
+          <button type="button" mat-icon-button color="primary" [disabled]="!commentInput.valid" (click)="addComment(commentInput, item.id, topic.id)">
+            <mat-icon svgIcon="outline-add_comment"></mat-icon>
+          </button>
+          </div>
+          <ng-container *ngFor="let comment of getCommentsByItemId(item.id);">
+            <div class="comment-line">
+              <span class="minutes-line-number primary-dark-color"></span>
+              <img class="avatar" [src]="getPhotoURL(comment.lastUpdatedBy)" [alt]="getDisplayName(comment.lastUpdatedBy)">
+              <div class="form-field">
+                <div class="primary-dark-color font-sm"><strong>{{ getDisplayName(comment.lastUpdatedBy) }}</strong></div>
+                <div class="primary-dark-color font-sm">{{ comment.description }}</div>
+                <div class="primary-color font-xs">{{ this.timeElapsed.get(comment.id) | async }}</div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <div class="minutes-line-edit primary-dark-border-bottom"></div>
       </ng-container>
     </ng-container>
       <!-- END: Topic Items -->

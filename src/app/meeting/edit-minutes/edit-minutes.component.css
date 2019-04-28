@@ -234,3 +234,7 @@
 .chip-gt-xs {
   font-size: 1rem;
 }
+
+.transparent-separator {
+  margin-top: 5px;
+}

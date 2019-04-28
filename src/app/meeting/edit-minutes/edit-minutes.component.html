@@ -95,7 +95,7 @@
             <div class="minutes-line-edit">
               <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
               <mat-form-field class="form-field">
-                <textarea matInput [ngModel]="item.description" required #updateItemRef #updateItemInput="ngModel"></textarea>
+                <textarea matInput [matTextareaAutosize]="true" [ngModel]="item.description" required #updateItemRef #updateItemInput="ngModel"></textarea>
               </mat-form-field>
               <button mat-icon-button color="primary" [disabled]="!(updateItemInput.valid && updateItemActionBySelect.valid && updateItemDueDateInput.valid)" (click)="updateItem(topic.id, item.id, updateItemInput, updateItemActionBySelect, updateItemDueDateInput)"><mat-icon>done</mat-icon></button>
               <button mat-icon-button color="primary" (click)="editMinutesLine = null"><mat-icon>close</mat-icon></button>
@@ -125,11 +125,9 @@
           <div *ngIf="editMinutesLine !== item.id" class="minutes-line primary-dark-border-bottom">
             <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
             <div class="form-field">
-              <span class="primary-dark-color">{{ item.description }}</span>
-              <br *ngIf="item.actionBy !== 'none'">
-              <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</span>
-              <br *ngIf="item.actionBy !== 'none'">
-              <span *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</span>
+              <div class="primary-dark-color">{{ item.description }}</div>
+              <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</div>
+              <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</div>
             </div>
             <button mat-icon-button [matMenuTriggerFor]="actionMenu" color="primary"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #actionMenu="matMenu">
@@ -144,7 +142,7 @@
         <div class="minutes-line-edit">
           <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ topic.items.length + 1 }}.</span>
           <mat-form-field class="form-field">
-            <textarea matInput placeholder="Add New Item" (blur)="onNewItemInputBlur(newItemInput)" ngModel required #newItemRef #newItemInput="ngModel"></textarea>
+            <textarea matInput [matTextareaAutosize]="true" placeholder="Add New Item" (blur)="onNewItemInputBlur(newItemInput)" ngModel required #newItemRef #newItemInput="ngModel"></textarea>
           </mat-form-field>
           <button type="button" mat-icon-button color="primary" [disabled]="!(newItemInput.valid && newItemActionBySelect.valid && newItemDueDateInput.valid)" (click)="addItem(topic.id, newItemInput, newItemActionBySelect, newItemDueDateInput)">
             <mat-icon>add</mat-icon>

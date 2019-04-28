@@ -42,6 +42,10 @@ export class UIService {
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-how_to_reg-24px.svg'));
     iconRegistry.addSvgIcon('outline-speaker',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-speaker-24px.svg'));
+    iconRegistry.addSvgIcon('outline-add_comment',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-add_comment-24px.svg'));
+    iconRegistry.addSvgIcon('outline-mode_comment',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-mode_comment-24px.svg'));
     iconRegistry.addSvgIcon('contract',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/contract.svg'));
     iconRegistry.addSvgIcon('writing',

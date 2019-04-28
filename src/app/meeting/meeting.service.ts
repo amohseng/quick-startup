@@ -7,6 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Meeting } from './models/meeting.model';
 import { InvitationResponse } from './models/invitation-response.model';
 import { Minutes } from './models/minutes.model';
+import { Comment } from './models/comment.model';
 
 
 @Injectable({
@@ -57,6 +58,18 @@ export class MeetingService {
     .catch(error => {
       console.log(error);
       throw new Error('Oops! Invitation response not saved');
+    });
+  }
+
+  saveComment(comment: Comment): Promise<string> {
+    comment.id = this.db.createId();
+    return this.db.collection('comments').doc(comment.id).set(comment)
+    .then(() => {
+      return Promise.resolve(comment.id);
+    })
+    .catch(error => {
+      console.log(error);
+      throw new Error('Oops! Comment not saved');
     });
   }
 
@@ -149,5 +162,16 @@ export class MeetingService {
       list.push(this.getInvitationResponse(meetingId, email));
     }
     return merge(...list);
+  }
+
+  getCommentsByMeetingId(meetingId: string) {
+    return this.db.collection('comments', ref => ref.where('meetingId', '==', meetingId).orderBy('lastUpdated', 'desc'))
+      .snapshotChanges()
+      .pipe(map(actions => actions.map(action => {
+        const data = action.payload.doc.data() as Comment;
+        const id = action.payload.doc.id;
+        const lastUpdated = (data.lastUpdated as unknown as firestore.Timestamp).toDate();
+        return { ...data, id, lastUpdated };
+      })));
   }
 }

@@ -75,7 +75,7 @@
         <button mat-icon-button color="primary" (click)="updateTopic(topic.id, updateTopicInput)"><mat-icon>done</mat-icon></button>
         <button mat-icon-button color="primary" (click)="editMinutesLine = null"><mat-icon>close</mat-icon></button>
       </div>
-      <div *ngIf="editMinutesLine !== topic.id" class="minutes-line primary-dark-border-bottom clickable" (click)="toggleOpenTopicItems(topic.id)">
+      <div *ngIf="editMinutesLine !== topic.id" class="minutes-topic-line primary-dark-border-bottom clickable" (click)="toggleOpenTopicItems(topic.id)">
         <span class="minutes-line-number primary-dark-color"><strong>{{ topicIndex + 1 }}.</strong></span>
         <div class="form-field">
           <span class="primary-dark-color"><strong>{{ topic.description }}</strong></span>
@@ -126,6 +126,7 @@
             <span class="minutes-line-number primary-dark-color">{{ topicIndex + 1 }}.{{ itemIndex + 1 }}.</span>
             <div class="form-field">
               <div class="primary-dark-color">{{ item.description }}</div>
+              <br *ngIf="item.actionBy !== 'none'">
               <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</div>
               <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</div>
             </div>

@@ -61,7 +61,7 @@
   width: 100%;
   box-sizing: border-box;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   padding: 5px;
 }
@@ -73,6 +73,14 @@
   align-items: center;
   justify-content: flex-start;
   padding-left: 10px;
+}
+
+.comment-line-edit {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .minutes-line-number {
@@ -244,6 +252,10 @@
   font-size: 0.7rem;
 }
 
+.font-light-weight {
+  font-weight: 400;
+}
+
 .font-sm {
   font-size: 0.85rem;
 }
@@ -262,4 +274,3 @@
 .transparent-separator {
   margin-top: 5px;
 }
-

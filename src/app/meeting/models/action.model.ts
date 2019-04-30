@@ -6,14 +6,13 @@ export enum ActionStatus  {
 
 export interface Action {
   id: string;
-  itemId: string;
   topicId: string;
   meetingId: string;
   companyId: string;
   companyEmail: string;
   description: string;
+  actionBy: string;
   dueDate: Date;
-  responsibilty: string;
   status: ActionStatus;
   statusLastUpdated: Date;
   statusLastUpdatedBy: string;

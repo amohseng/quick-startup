@@ -29,16 +29,6 @@
   padding: 0px 10px 0px 10px;
 }
 
-.main-body {
-  box-sizing: border-box;
-  display: flex;
-  flex-flow: column;
-  align-items: flex-start;
-  justify-content: center;
-  margin: 10px 0px 10px 0px;
-  padding: 10px;
-}
-
 .form-item {
   width: 100%;
   box-sizing: border-box;

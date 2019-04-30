@@ -22,7 +22,7 @@
     <button mat-icon-button color="primary" (click)="viewMinutes()"><mat-icon svgIcon="outline-description"></mat-icon></button>
     <button mat-icon-button color="primary" (click)="viewCalendar()"><mat-icon>calendar_today</mat-icon></button>
   </div>
-  <div *ngIf="!isLoading" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+  <div *ngIf="!isLoading" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
     <div *ngIf="meeting.canceled" ngClass="form-item">
       <mat-icon color="warn">warning</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>

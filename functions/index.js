@@ -21,11 +21,10 @@ exports.onCreateMinutes =  functions.region('europe-west1')
                                                   description: item.description,
                                                   actionBy: item.actionBy,
                                                   dueDate: item.dueDate,
-                                                  status: 'OPENED',
                                                   lastUpdated: minutes.lastUpdated,
                                                   lastUpdatedBy: minutes.lastUpdatedBy,
                                                 }
-                                                admin.firestore().doc(`actions/${item.id}`).set(action);
+                                                admin.firestore().collection('actions').doc(item.id).set(action, {merge: true});
                                               }
                                             }
                                           }
@@ -33,3 +32,14 @@ exports.onCreateMinutes =  functions.region('europe-west1')
                                       }
                                       return true;
                                     });
+
+exports.onUpdateAction =  functions.region('europe-west1')
+                                   .firestore
+                                   .document('actions/{id}')
+                                   .onUpdate((change, context) => {
+                                      let action = change.before.data();
+                                      action.actionId = action.id;
+                                      delete action.id;
+                                      admin.firestore().collection('actionChanges').add(action);
+                                      return true;
+                                   });

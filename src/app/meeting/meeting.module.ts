@@ -6,7 +6,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from '../material.module';
 import { MeetingRoutingModule } from './meeting-routing.module';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
-import { ManageActionsComponent } from './manage-actions/manage-actions.component';
 import { CalendarWeekViewComponent } from './calendar/calendar-week-view/calendar-week-view.component';
 import { CalendarHeaderComponent } from './calendar/calendar-header/calendar-header.component';
 import { EditMeetingComponent } from './edit-meeting/edit-meeting.component';
@@ -16,12 +15,12 @@ import { CalendarDayViewComponent } from './calendar/calendar-day-view/calendar-
 import { CheckMeetingRoomAvailabilityComponent } from './check-meeting-room-availability/check-meeting-room-availability.component';
 import { ViewMinutesComponent } from './view-minutes/view-minutes.component';
 import { EditMinutesComponent } from './edit-minutes/edit-minutes.component';
+import { ActionLogComponent } from './action-log/action-log.component';
 
 
 @NgModule({
   declarations: [
     ViewCalendarComponent,
-    ManageActionsComponent,
     CalendarWeekViewComponent,
     CalendarHeaderComponent,
     EditMeetingComponent,
@@ -30,7 +29,8 @@ import { EditMinutesComponent } from './edit-minutes/edit-minutes.component';
     CalendarDayViewComponent,
     CheckMeetingRoomAvailabilityComponent,
     ViewMinutesComponent,
-    EditMinutesComponent
+    EditMinutesComponent,
+    ActionLogComponent
   ],
   imports: [
     CommonModule,

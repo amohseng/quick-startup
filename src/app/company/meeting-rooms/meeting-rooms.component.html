@@ -1,23 +1,25 @@
 <div fxLayout.lt-sm="column" fxLayoutGap="10px" fxLayoutAlign.lt-sm="start center" fxLayoutAlign.gt-xs="start start" ngClass.gt-xs="tab-content" class="row-width">
   <mat-list ngClass.xs="section-xs" ngClass.gt-xs="section-gt-xs">
-    <mat-toolbar color="primary">
+    <mat-toolbar class="curvy-toolbar" color="primary">
       <span class="section-title">Meeting Rooms</span>
     </mat-toolbar>
-    <ng-container *ngFor="let room of meetingRooms">
-      <mat-list-item>
-        <mat-icon mat-list-icon color="primary" svgIcon="outline-meeting_room"></mat-icon>
-        <p matLine >{{ room.name }}, {{ getLocationById(room.locationId).name }}</p>
-        <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="tryUpdateMeetingRoom(room)">
-          <mat-icon svgIcon="outline-edit"></mat-icon>
-        </button>
-        <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="deleteMeetingRoom(room.id)">
-          <mat-icon>delete_outline</mat-icon>
-        </button>
+    <div class="curvy-content">
+      <ng-container *ngFor="let room of meetingRooms">
+        <mat-list-item>
+          <mat-icon mat-list-icon color="primary" svgIcon="outline-meeting_room"></mat-icon>
+          <p matLine >{{ room.name }}, {{ getLocationById(room.locationId).name }}</p>
+          <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="tryUpdateMeetingRoom(room)">
+            <mat-icon svgIcon="outline-edit"></mat-icon>
+          </button>
+          <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="deleteMeetingRoom(room.id)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </mat-list-item>
+      </ng-container>
+      <mat-list-item *ngIf="isAdmin">
+          <mat-icon mat-list-icon color="primary">add</mat-icon>
+          <button mat-button color="primary" class="light-button" (click)="tryCreateMeetingRoom()">Add New Room</button>
       </mat-list-item>
-    </ng-container>
-    <mat-list-item *ngIf="isAdmin">
-        <mat-icon mat-list-icon color="primary">add</mat-icon>
-        <button mat-button color="primary" class="light-button" (click)="tryCreateMeetingRoom()">Add New Room</button>
-    </mat-list-item>
+    </div>
   </mat-list>
 </div>

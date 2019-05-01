@@ -40,3 +40,14 @@ mat-form-field {
 .primary-color {
   color: #388E3C;
 }
+
+.curvy-toolbar {
+  border-radius: 15px 15px 0px 0px;
+}
+
+.curvy-content {
+  border: 1px solid #388E3C;
+  border-radius: 0px 0px 15px 15px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}

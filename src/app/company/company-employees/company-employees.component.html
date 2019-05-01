@@ -1,38 +1,42 @@
 <div fxLayout.lt-sm="column" fxLayoutGap="10px" fxLayoutAlign.lt-sm="start center" fxLayoutAlign.gt-xs="start start" ngClass.gt-xs="tab-content" class="row-width">
   <mat-list ngClass.xs="section-xs" ngClass.gt-xs="section-gt-xs">
-    <mat-toolbar  color="primary">
+    <mat-toolbar class="curvy-toolbar" color="primary">
       <span class="section-title">Company Employees</span>
     </mat-toolbar>
-    <mat-list-item *ngFor="let employee of companyEmployees">
-      <img matListAvatar [src]="employee.photoURL" [alt]="employee.displayName">
-      <h3 matLine>{{employee.displayName}}</h3>
-      <button mat-icon-button color="primary" [disabled]="(!(isAdmin || employee.id === email)) || (isAdmin && employee.id === email && (companyEmployees.length > 1 || companyJoinRequests.length > 0)) || isWriting" (click)="deleteEmployee(employee.id,employee.joinRequestId)">
-        <mat-icon>delete_outline</mat-icon>
-      </button>
-    </mat-list-item>
+    <div class="curvy-content">
+      <mat-list-item *ngFor="let employee of companyEmployees">
+        <img matListAvatar [src]="employee.photoURL" [alt]="employee.displayName">
+        <h3 matLine>{{employee.displayName}}</h3>
+        <button mat-icon-button color="primary" [disabled]="(!(isAdmin || employee.id === email)) || (isAdmin && employee.id === email && (companyEmployees.length > 1 || companyJoinRequests.length > 0)) || isWriting" (click)="deleteEmployee(employee.id,employee.joinRequestId)">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </mat-list-item>
+    </div>
   </mat-list>
   <mat-list ngClass.xs="section-xs" ngClass.gt-xs="section-gt-xs">
-    <mat-toolbar  color="primary" *ngIf="isAdmin || companyJoinRequests.length>0">
+    <mat-toolbar class="curvy-toolbar" color="primary" *ngIf="isAdmin || companyJoinRequests.length>0">
       <span class="section-title">Company Join Requests</span>
     </mat-toolbar>
-    <h3 mat-subheader class="primary-color" *ngIf="companyJoinRequests.length>0">Pending Join Requests</h3>
-    <mat-list-item *ngFor="let joinRequest of companyJoinRequests">
-      <mat-icon mat-list-icon color="primary">person_outline</mat-icon>
-      <h3 matLine>{{joinRequest.email}}</h3>
-      <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="deleteJoinRequest(joinRequest.id)">
-        <mat-icon>delete_outline</mat-icon>
-      </button>
-    </mat-list-item>
-    <h3 mat-subheader class="primary-color" *ngIf="isAdmin">Send New Join Request</h3>
-    <mat-list-item *ngIf="isAdmin">
-      <mat-form-field matLine>
-        <input type="text" matInput placeholder="Employee email" ngModel name="email" required email #emailInput="ngModel">
-        <mat-error *ngIf="emailInput.hasError('required')">Email is required</mat-error>
-        <mat-error *ngIf="!emailInput.hasError('required')">Enter a valid email</mat-error>
-      </mat-form-field>
-      <button mat-icon-button color="primary" [disabled]="!emailInput.valid || isWriting" (click)="createJoinRequest(emailInput.value, emailInput)">
-        <mat-icon>group_add</mat-icon>
-      </button>
-    </mat-list-item>
+    <div class="curvy-content">
+      <h3 mat-subheader class="primary-color" *ngIf="companyJoinRequests.length>0">Pending Join Requests</h3>
+      <mat-list-item *ngFor="let joinRequest of companyJoinRequests">
+        <mat-icon mat-list-icon color="primary">person_outline</mat-icon>
+        <h3 matLine>{{joinRequest.email}}</h3>
+        <button mat-icon-button color="primary" [disabled]="!isAdmin || isWriting" (click)="deleteJoinRequest(joinRequest.id)">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </mat-list-item>
+      <h3 mat-subheader class="primary-color" *ngIf="isAdmin">Send New Join Request</h3>
+      <mat-list-item *ngIf="isAdmin">
+        <mat-form-field matLine>
+          <input type="text" matInput placeholder="Employee email" ngModel name="email" required email #emailInput="ngModel">
+          <mat-error *ngIf="emailInput.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="!emailInput.hasError('required')">Enter a valid email</mat-error>
+        </mat-form-field>
+        <button mat-icon-button color="primary" [disabled]="!emailInput.valid || isWriting" (click)="createJoinRequest(emailInput.value, emailInput)">
+          <mat-icon>group_add</mat-icon>
+        </button>
+      </mat-list-item>
+    </div>
   </mat-list>
 </div>

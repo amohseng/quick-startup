@@ -15,11 +15,12 @@ exports.onUpdateMinutes =  functions.region('europe-west1')
                                     .firestore
                                     .document('minutes/{id}')
                                     .onUpdate((change, context) => {
-                                      let minutes = change.before.data();
-                                      _saveActions(minutes, false);
-                                      minutes.minutesId = minutes.id;
-                                      delete minutes.id;
-                                      admin.firestore().collection('minutesChanges').add(minutes);
+                                      let oldMinutes = change.before.data();
+                                      let newMinutes = change.after.data();
+                                      _saveActions(newMinutes, false);
+                                      oldMinutes.minutesId = oldMinutes.id;
+                                      delete oldMinutes.id;
+                                      admin.firestore().collection('minutesChanges').add(oldMinutes);
                                       return true;
                                     });
 

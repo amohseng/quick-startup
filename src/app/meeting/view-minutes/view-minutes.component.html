@@ -1,16 +1,16 @@
 <section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
-  <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
-    <mat-icon color="primary" svgIcon="outline-description"></mat-icon>
-    <div class="primary-color">Meeting Minutes</div>
+  <div *ngIf="!isLoading" class="toolbar primary-light-background primary-border-curvy-top" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <mat-icon class="icon-color" svgIcon="outline-description"></mat-icon>
+    <div class="icon-color"><strong>Meeting Minutes</strong></div>
     <div class="spacer"></div>
     <button mat-icon-button color="primary" (click)="cancel()">
-      <mat-icon>arrow_back</mat-icon>
+      <mat-icon class="icon-color">arrow_back</mat-icon>
     </button>
-    <button mat-icon-button type="button" color="primary" [disabled]="!isScribe" (click)="editMinutes()">
-      <mat-icon svgIcon="outline-edit"></mat-icon>
+    <button mat-icon-button type="button" color="primary" *ngIf="isScribe" (click)="editMinutes()">
+      <mat-icon class="icon-color" svgIcon="outline-edit"></mat-icon>
     </button>
   </div>
-  <div *ngIf="!isLoading && !minutes" ngClass="main-body" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+  <div *ngIf="!isLoading && !minutes" class="container primary-border-curvy-bottom" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
     <div ngClass="form-item">
       <mat-icon color="accent">warning</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -19,7 +19,8 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!isLoading && minutes" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+  <div *ngIf="!isLoading && minutes" class="container primary-border-curvy-bottom" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div class="divider"></div>
     <div ngClass="form-item">
       <mat-icon color="primary">event_note</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -48,7 +49,7 @@
         {{ds.getFromTwelveHoursEveryHalf(meeting.start).text}} - {{ds.getFromTwelveHoursEveryHalf(meeting.end).text}}
       </div>
     </div>
-    <mat-divider ngClass="primary-light-border-top"></mat-divider>
+    <div class="divider primary-light-border-top"></div>
     <div ngClass="form-item">
       <mat-icon color="primary">people_outline</mat-icon>
       <span>&nbsp;</span>
@@ -64,9 +65,9 @@
         </mat-chip-list>
       </div>
     </div>
-    <mat-divider ngClass="accent-dark-border-top"></mat-divider>
+    <div class="divider"></div>
     <!-- Minutes Header Line -->
-    <div class="minutes-line primary-dark-border-bottom primary-light-background">
+    <div class="minutes-line primary-dark-border-bottom accent-dark-border-top primary-light-background">
       <span class="minutes-line-number primary-dark-color"><strong>No.</strong></span>
       <div class="form-field">
         <span class="primary-dark-color"><strong>Description</strong></span>

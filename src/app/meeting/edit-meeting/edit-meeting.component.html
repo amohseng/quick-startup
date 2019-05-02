@@ -1,18 +1,20 @@
-<section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
-  <form #f="ngForm" (ngSubmit)="saveMeeting(f)">
-    <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
-      <mat-icon color="primary">date_range</mat-icon>
-      <div *ngIf="!editMode" class="primary-color">New Meeting</div>
-      <div *ngIf="editMode" class="primary-color">Update Meeting</div>
+<form #f="ngForm" (ngSubmit)="saveMeeting(f)">
+  <section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
+    <div *ngIf="!isLoading" class="toolbar primary-light-background primary-border-curvy-top" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+      <mat-icon class="icon-color">date_range</mat-icon>
+      <div *ngIf="!editMode" class="icon-color"><strong>New Meeting</strong></div>
+      <div *ngIf="editMode" class="icon-color"><strong>Update Meeting</strong></div>
       <div class="spacer"></div>
       <button mat-icon-button color="primary" (click)="cancel()">
-        <mat-icon svgIcon="outline-cancel"></mat-icon>
+        <mat-icon class="icon-color" svgIcon="outline-cancel"></mat-icon>
       </button>
       <button mat-icon-button type="submit" [disabled]="!f.valid" color="primary">
-        <mat-icon svgIcon="outline-send"></mat-icon>
+        <mat-icon *ngIf="f.valid" class="icon-color" svgIcon="outline-send"></mat-icon>
+        <mat-icon *ngIf="!f.valid" class="disabled-color" svgIcon="outline-send"></mat-icon>
       </button>
     </div>
-    <div *ngIf="!isLoading" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div *ngIf="!isLoading" class="container primary-border-curvy-bottom" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+      <div class="divider"></div>
       <div ngClass="form-item">
         <mat-icon color="primary">event_note</mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -118,7 +120,8 @@
           <mat-slide-toggle color="warn" [ngModel]="meeting.canceled" name="canceled"></mat-slide-toggle>
         </div>
       </div>
+      <div class="divider"></div>
     </div>
-  </form>
-  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-</section>
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  </section>
+</form>

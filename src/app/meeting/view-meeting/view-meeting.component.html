@@ -1,12 +1,12 @@
 <section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
-  <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
-    <mat-icon color="primary">date_range</mat-icon>
-    <div class="primary-color">Meeting Details</div>
+  <div *ngIf="!isLoading" class="toolbar primary-light-background primary-border-curvy-top" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <mat-icon class="icon-color">date_range</mat-icon>
+    <div class="icon-color"><strong>Meeting Details</strong></div>
     <div class="spacer"></div>
     <button *ngIf="!isOrganizer" mat-icon-button [matMenuTriggerFor]="responseMenu">
-      <span class="disabled-color light-button" *ngIf="!getInvitationResponseByEmail(email).responseDate"><mat-icon>error_outline</mat-icon></span>
-      <span class="primary-color light-button" *ngIf="getInvitationResponseByEmail(email).responseDate && getInvitationResponseByEmail(email).response"><mat-icon>event_available</mat-icon></span>
-      <span class="warn-color light-button" *ngIf="getInvitationResponseByEmail(email).responseDate && !getInvitationResponseByEmail(email).response"><mat-icon>event_busy</mat-icon></span>
+      <mat-icon class="disabled-color" *ngIf="!getInvitationResponseByEmail(email).responseDate">error_outline</mat-icon>
+      <mat-icon class="primary-color" *ngIf="getInvitationResponseByEmail(email).responseDate && getInvitationResponseByEmail(email).response">event_available</mat-icon>
+      <mat-icon class="warn-color" *ngIf="getInvitationResponseByEmail(email).responseDate && !getInvitationResponseByEmail(email).response">event_busy</mat-icon>
     </button>
     <mat-menu #responseMenu="matMenu">
       <button *ngIf="!isOrganizer" mat-menu-item (click)="accept()">
@@ -18,11 +18,12 @@
         <span class="warn-color">Decline</span>
       </button>
     </mat-menu>
-    <button *ngIf="isOrganizer" mat-icon-button color="primary" (click)="editMeeting()"><mat-icon svgIcon="outline-edit"></mat-icon></button>
-    <button mat-icon-button color="primary" (click)="viewMinutes()"><mat-icon svgIcon="outline-description"></mat-icon></button>
-    <button mat-icon-button color="primary" (click)="viewCalendar()"><mat-icon>calendar_today</mat-icon></button>
+    <button *ngIf="isOrganizer" mat-icon-button color="primary" (click)="editMeeting()"><mat-icon class="icon-color" svgIcon="outline-edit"></mat-icon></button>
+    <button mat-icon-button color="primary" (click)="viewMinutes()"><mat-icon class="icon-color" svgIcon="outline-description"></mat-icon></button>
+    <button mat-icon-button color="primary" (click)="viewCalendar()"><mat-icon class="icon-color">calendar_today</mat-icon></button>
   </div>
-  <div *ngIf="!isLoading" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+  <div *ngIf="!isLoading" class="container primary-border-curvy-bottom" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div class="divider"></div>
     <div *ngIf="meeting.canceled" ngClass="form-item">
       <mat-icon color="warn">warning</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -94,6 +95,7 @@
         {{ds.getFromTwelveHoursEveryHalf(meeting.start).text}} - {{ds.getFromTwelveHoursEveryHalf(meeting.end).text}}
       </div>
     </div>
+    <div class="divider"></div>
   </div>
   <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 </section>

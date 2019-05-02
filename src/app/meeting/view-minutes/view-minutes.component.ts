@@ -259,6 +259,7 @@ export class ViewMinutesComponent implements OnInit, OnDestroy {
           meetingId: this.meeting.id,
           companyId: this.meeting.companyId,
           companyEmail: this.meeting.companyEmail,
+          minutesRevision: this.minutes.revision,
           description: commentInput.value,
           lastUpdated: new Date(),
           lastUpdatedBy: this.email

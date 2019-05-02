@@ -5,6 +5,7 @@ export interface Comment {
   meetingId: string;
   companyId: string;
   companyEmail: string;
+  minutesRevision: number;
   description: string;
   lastUpdated: Date;
   lastUpdatedBy: string;

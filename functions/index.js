@@ -21,6 +21,7 @@ exports.onCreateMinutes =  functions.region('europe-west1')
                                                   description: item.description,
                                                   actionBy: item.actionBy,
                                                   dueDate: item.dueDate,
+                                                  followupBy: item.followupBy,
                                                   lastUpdated: minutes.lastUpdated,
                                                   lastUpdatedBy: minutes.lastUpdatedBy,
                                                 }

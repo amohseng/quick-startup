@@ -97,7 +97,7 @@
               <mat-form-field class="form-field">
                 <textarea matInput [matTextareaAutosize]="true" [ngModel]="item.description" required #updateItemRef #updateItemInput="ngModel"></textarea>
               </mat-form-field>
-              <button mat-icon-button color="primary" [disabled]="!(updateItemInput.valid && updateItemActionBySelect.valid && updateItemDueDateInput.valid)" (click)="updateItem(topic.id, item.id, updateItemInput, updateItemActionBySelect, updateItemDueDateInput)"><mat-icon>done</mat-icon></button>
+              <button mat-icon-button color="primary" [disabled]="!(updateItemInput.valid && updateItemActionBySelect.valid && updateItemDueDateInput.valid && updateItemFollowupBySelect.valid)" (click)="updateItem(topic.id, item.id, updateItemInput, updateItemActionBySelect, updateItemDueDateInput, updateItemFollowupBySelect)"><mat-icon>done</mat-icon></button>
               <button mat-icon-button color="primary" (click)="editMinutesLine = null"><mat-icon>close</mat-icon></button>
             </div>
             <div class="minutes-line-edit">
@@ -113,12 +113,25 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="minutes-line-edit primary-dark-border-bottom">
+            <div class="minutes-line-edit">
               <span class="minutes-line-number primary-dark-color"></span>
               <mat-form-field>
                 <input matInput [matDatepicker]="updateItemDueDatePicker" placeholder="Due Date"  [ngModel]="item.dueDate" required name="updateItemDueDate" #updateItemDueDateInput="ngModel">
                 <mat-datepicker-toggle matSuffix [for]="updateItemDueDatePicker"></mat-datepicker-toggle>
                 <mat-datepicker #updateItemDueDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="minutes-line-edit primary-dark-border-bottom">
+              <span class="minutes-line-number primary-dark-color"></span>
+              <mat-form-field>
+                <mat-select placeholder="Follow-Up By" [ngModel]="item.followupBy" name="updateItemFollowupBy" required #updateItemFollowupBySelect="ngModel">
+                  <mat-option value="none">
+                    None
+                  </mat-option>
+                  <mat-option *ngFor="let invitation of meeting.invitations" [value]="invitation">
+                    {{getDisplayName(invitation)}}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
             </div>
           </ng-container>
@@ -129,6 +142,7 @@
               <br *ngIf="item.actionBy !== 'none'">
               <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</div>
               <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</div>
+              <div *ngIf="item.actionBy !== 'none' && item.followupBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Follow-Up By:</strong> {{ getDisplayName(item.followupBy) }}</div>
             </div>
             <button mat-icon-button [matMenuTriggerFor]="actionMenu" color="primary"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #actionMenu="matMenu">
@@ -145,7 +159,7 @@
           <mat-form-field class="form-field">
             <textarea matInput [matTextareaAutosize]="true" placeholder="Add New Item" (blur)="onNewItemInputBlur(newItemInput)" ngModel required #newItemRef #newItemInput="ngModel"></textarea>
           </mat-form-field>
-          <button type="button" mat-icon-button color="primary" [disabled]="!(newItemInput.valid && newItemActionBySelect.valid && newItemDueDateInput.valid)" (click)="addItem(topic.id, newItemInput, newItemActionBySelect, newItemDueDateInput)">
+          <button type="button" mat-icon-button color="primary" [disabled]="!(newItemInput.valid && newItemActionBySelect.valid && newItemDueDateInput.valid && newItemFollowupBySelect.valid)" (click)="addItem(topic.id, newItemInput, newItemActionBySelect, newItemDueDateInput, newItemFollowupBySelect)">
             <mat-icon>add</mat-icon>
           </button>
         </div>
@@ -162,12 +176,25 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="minutes-line-edit primary-dark-border-bottom">
+        <div class="minutes-line-edit">
           <span class="minutes-line-number primary-dark-color"></span>
           <mat-form-field>
             <input matInput [matDatepicker]="newItemDueDatePicker" placeholder="Due Date"  [ngModel]="newItemDueDateDefaultValue" required #newItemDueDateInput="ngModel">
             <mat-datepicker-toggle matSuffix [for]="newItemDueDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #newItemDueDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="minutes-line-edit primary-dark-border-bottom">
+          <span class="minutes-line-number primary-dark-color"></span>
+          <mat-form-field>
+            <mat-select placeholder="Follow-Up By" [ngModel]="newItemFollowupByDefaultValue" required #newItemFollowupBySelect="ngModel">
+              <mat-option value="none">
+                None
+              </mat-option>
+              <mat-option *ngFor="let invitation of meeting.invitations" [value]="invitation">
+                {{getDisplayName(invitation)}}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
         <!-- END: New Item-->

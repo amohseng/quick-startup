@@ -3,4 +3,5 @@ export interface Item {
   description: string;
   actionBy: string;
   dueDate: Date;
+  followupBy: string;
 }

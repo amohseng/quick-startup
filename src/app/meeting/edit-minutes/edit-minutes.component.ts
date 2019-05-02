@@ -25,6 +25,7 @@ import { Company } from 'src/app/company/models/company.model';
 export class EditMinutesComponent implements OnInit, OnDestroy {
   newItemActionByDefaultValue = 'none';
   newItemDueDateDefaultValue = new Date();
+  newItemFollowupByDefaultValue = 'none';
   isLoading = false;
   isWriting = false;
   email = '';
@@ -261,21 +262,25 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     this.newTopicRef.nativeElement.focus();
   }
 
-  addItem(topicId: string, newItemInput: FormControl, newItemActionBySelect: FormControl, newItemDueDateInput: FormControl) {
+  addItem(topicId: string, newItemInput: FormControl, newItemActionBySelect: FormControl,
+    newItemDueDateInput: FormControl, newItemFollowupBySelect: FormControl) {
     const topicIndex = this.minutes.topics.findIndex((topic) => {
       return topic.id === topicId;
     });
-    if (topicIndex >= 0 && newItemInput.valid && newItemActionBySelect.valid && newItemDueDateInput.valid) {
+    if (topicIndex >= 0 && newItemInput.valid && newItemActionBySelect.valid &&
+        newItemDueDateInput.valid && newItemFollowupBySelect.valid) {
       this.minutes.topics[topicIndex].items.push({
         id: this.meetingService.getDBId(),
         description: newItemInput.value,
         actionBy: newItemActionBySelect.value,
-        dueDate: new Date(newItemDueDateInput.value)
+        dueDate: new Date(newItemDueDateInput.value),
+        followupBy: newItemActionBySelect.value === 'none' ? 'none' : newItemFollowupBySelect.value
       });
     }
     newItemInput.reset();
     newItemActionBySelect.reset(this.newItemActionByDefaultValue);
     newItemDueDateInput.reset(this.newItemDueDateDefaultValue);
+    newItemFollowupBySelect.reset(this.newItemFollowupByDefaultValue);
     this.newItemRef.nativeElement.focus();
   }
 
@@ -310,8 +315,8 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
   }
 
   updateItem(topicId: string, itemId: string, updateItemInput: FormControl,
-    updateItemActionBySelect: FormControl, updateItemDueDateInput: FormControl) {
-    if (updateItemInput.valid) {
+    updateItemActionBySelect: FormControl, updateItemDueDateInput: FormControl, updateItemFollowupBySelect: FormControl) {
+    if (updateItemInput.valid && updateItemActionBySelect.valid && updateItemDueDateInput.valid && updateItemFollowupBySelect.valid) {
       const topicIndex = this.minutes.topics.findIndex((topic) => {
         return topic.id === topicId;
       });
@@ -323,6 +328,8 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
           this.minutes.topics[topicIndex].items[itemIndex].description = updateItemInput.value;
           this.minutes.topics[topicIndex].items[itemIndex].actionBy = updateItemActionBySelect.value;
           this.minutes.topics[topicIndex].items[itemIndex].dueDate = new Date(updateItemDueDateInput.value);
+          this.minutes.topics[topicIndex]
+                      .items[itemIndex].followupBy = updateItemActionBySelect.value === 'none' ? 'none' : updateItemFollowupBySelect.value;
         }
       }
     }

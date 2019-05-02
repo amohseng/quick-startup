@@ -1,5 +1,6 @@
 export enum ActionStatus  {
   Opened = 'OPENED',
+  Ready = 'READY',
   Closed = 'CLOSED',
   Reopened = 'REOPENED'
 }
@@ -13,7 +14,9 @@ export interface Action {
   description: string;
   actionBy: string;
   dueDate: Date;
-  status: ActionStatus;
-  statusLastUpdated: Date;
-  statusLastUpdatedBy: string;
+  followupBy: string;
+  status?: ActionStatus;
+  statusComment?: string;
+  lastUpdated: Date;
+  lastUpdatedBy: string;
 }

@@ -34,7 +34,6 @@ export class ViewMinutesComponent implements OnInit, OnDestroy {
   meeting: Meeting;
   employees: Employee[] = [];
   companies: Company[];
-  allMinutesRevisions: Minutes[] = [];
   minutes: Minutes;
   comments: Comment[] = [];
   showItemComments = null;
@@ -100,11 +99,8 @@ export class ViewMinutesComponent implements OnInit, OnDestroy {
     if (this.minutesSubscription) {
       this.minutesSubscription.unsubscribe();
     }
-    this.minutesSubscription = this.meetingService.getMinutesByMeetingId(this.meetingId).pipe(take(1)).subscribe(allMinutesRevisions => {
-      this.allMinutesRevisions = allMinutesRevisions;
-      if (this.allMinutesRevisions.length > 0) {
-        this.minutes = this.allMinutesRevisions[this.allMinutesRevisions.length - 1];
-      }
+    this.minutesSubscription = this.meetingService.getMinutesByMeetingId(this.meetingId).pipe(take(1)).subscribe(minutes => {
+      this.minutes = minutes;
       this.fetchedResources += 1;
       if (this.fetchedResources >= this.totalResourcesToFetch) {
         this.isLoading = false;

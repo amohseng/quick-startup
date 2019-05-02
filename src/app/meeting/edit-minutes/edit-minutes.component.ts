@@ -34,7 +34,6 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
   meeting: Meeting;
   employees: Employee[] = [];
   companies: Company[];
-  allMinutesRevisions: Minutes[] = [];
   minutes: Minutes;
   editMinutesLine = null;
   openTopicItems = null;
@@ -98,12 +97,12 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
     if (this.minutesSubscription) {
       this.minutesSubscription.unsubscribe();
     }
-    this.minutesSubscription = this.meetingService.getMinutesByMeetingId(this.meetingId).pipe(take(1)).subscribe(allMinutesRevisions => {
-      this.allMinutesRevisions = allMinutesRevisions;
-      if (this.allMinutesRevisions.length < 1) {
-        this.setNewMinutes();
+    this.minutesSubscription = this.meetingService.getMinutesByMeetingId(this.meetingId).pipe(take(1)).subscribe(minutes => {
+      if (minutes) {
+        this.minutes = minutes;
+        this.minutes.revision += 1;
       } else {
-        this.minutes = this.allMinutesRevisions[this.allMinutesRevisions.length - 1];
+        this.setNewMinutes();
       }
       this.fetchedResources += 1;
       if (this.fetchedResources >= this.totalResourcesToFetch) {
@@ -120,8 +119,8 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
 
   setNewMinutes() {
     this.minutes = {
-      id: null,
-      meetingId: this.meeting.id,
+      id: this.meeting.id,
+      revision: 0,
       companyId: this.meeting.companyId,
       companyEmail: this.meeting.companyEmail,
       topics: [],

@@ -16,6 +16,8 @@ import { CheckMeetingRoomAvailabilityComponent } from './check-meeting-room-avai
 import { ViewMinutesComponent } from './view-minutes/view-minutes.component';
 import { EditMinutesComponent } from './edit-minutes/edit-minutes.component';
 import { ActionLogComponent } from './action-log/action-log.component';
+import { ManageActionsComponent } from './manage-actions/manage-actions.component';
+import { MyActionsComponent } from './my-actions/my-actions.component';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { ActionLogComponent } from './action-log/action-log.component';
     CheckMeetingRoomAvailabilityComponent,
     ViewMinutesComponent,
     EditMinutesComponent,
-    ActionLogComponent
+    ActionLogComponent,
+    ManageActionsComponent,
+    MyActionsComponent
   ],
   imports: [
     CommonModule,

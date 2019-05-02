@@ -1,8 +1,8 @@
 <section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
   <div *ngIf="!isLoading" class="toolbar primary-border" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
     <mat-icon color="primary" svgIcon="outline-description"></mat-icon>
-    <div *ngIf="allMinutesRevisions.length === 0" class="primary-color">Create Meeting Minutes</div>
-    <div *ngIf="allMinutesRevisions.length > 0" class="primary-color">Update Meeting Minutes</div>
+    <div *ngIf="minutes.revision === 0" class="primary-color">Create Meeting Minutes</div>
+    <div *ngIf="minutes.revision > 0" class="primary-color">Update Meeting Minutes</div>
     <div class="spacer"></div>
     <button mat-icon-button color="primary" (click)="cancel()">
       <mat-icon svgIcon="outline-cancel"></mat-icon>
@@ -16,7 +16,7 @@
       <mat-icon color="primary">event_note</mat-icon>
       <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
       <div ngClass="form-field">
-        <span class="subject primary-color">{{ meeting.subject }} (Rev. {{ allMinutesRevisions.length }})</span>
+        <span class="subject primary-color">{{ meeting.subject }} (Rev. {{ minutes.revision }})</span>
       </div>
     </div>
     <div ngClass="form-item">

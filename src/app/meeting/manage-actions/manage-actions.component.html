@@ -1,4 +1,4 @@
-<mat-tab-group *ngIf="!isLoading" dynamicHeight=true class="module-background" (swipeleft)="onSwipe($event)" (swiperight)="onSwipe($event)" (selectedIndexChange)="onIndexChange($event)" [selectedIndex]="tabIndex">
+<mat-tab-group dynamicHeight=true class="module-background" (swipeleft)="onSwipe($event)" (swiperight)="onSwipe($event)" (selectedIndexChange)="onIndexChange($event)" [selectedIndex]="tabIndex">
   <mat-tab>
     <ng-template mat-tab-label>
       <mat-icon color="primary">list_alt</mat-icon>

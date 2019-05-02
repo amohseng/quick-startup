@@ -7,7 +7,7 @@ exports.onCreateMinutes =  functions.region('europe-west1')
                                     .document('minutes/{id}')
                                     .onCreate((snap, context) => {
                                       const minutes = snap.data();
-                                      _saveActions(minutes, true);
+                                      _saveActions(minutes);
                                       return true;
                                     });
 
@@ -17,7 +17,7 @@ exports.onUpdateMinutes =  functions.region('europe-west1')
                                     .onUpdate((change, context) => {
                                       let oldMinutes = change.before.data();
                                       let newMinutes = change.after.data();
-                                      _saveActions(newMinutes, false);
+                                      _saveActions(newMinutes);
                                       oldMinutes.minutesId = oldMinutes.id;
                                       delete oldMinutes.id;
                                       admin.firestore().collection('minutesChanges').add(oldMinutes);
@@ -38,46 +38,27 @@ exports.onUpdateAction =  functions.region('europe-west1')
 
 
 
-let _saveActions = (minutes, isNew) => {
+let _saveActions = (minutes) => {
   if (minutes.topics) {
     for (let topic of minutes.topics) {
       if(topic.items) {
         for (let item of topic.items) {
           if (item.actionBy !== 'none') {
-            if(isNew) {
               let action = {
-                id: item.id,
-                topicId: topic.id,
-                meetingId: minutes.id,
-                companyId: minutes.companyId,
-                companyEmail: minutes.companyEmail,
-                description: item.description,
-                actionBy: item.actionBy,
-                dueDate: item.dueDate,
-                followupBy: item.followupBy,
-                status: 'OPENED',
-                statusComment: 'For Your Action',
-                lastUpdated: minutes.lastUpdated,
-                lastUpdatedBy: minutes.lastUpdatedBy,
-              }
-              admin.firestore().collection('actions').doc(item.id).set(action);
-            } else {
-              let action = {
-                id: item.id,
-                topicId: topic.id,
-                meetingId: minutes.id,
-                companyId: minutes.companyId,
-                companyEmail: minutes.companyEmail,
-                description: item.description,
-                actionBy: item.actionBy,
-                dueDate: item.dueDate,
-                followupBy: item.followupBy,
-                lastUpdated: minutes.lastUpdated,
-                lastUpdatedBy: minutes.lastUpdatedBy,
-              }
-              admin.firestore().collection('actions').doc(item.id).set(action, {merge: true});
+              id: item.id,
+              topicId: topic.id,
+              meetingId: minutes.id,
+              minutesRevision: minutes.revision,
+              companyId: minutes.companyId,
+              companyEmail: minutes.companyEmail,
+              description: item.description,
+              actionBy: item.actionBy,
+              dueDate: item.dueDate,
+              followupBy: item.followupBy,
+              lastUpdated: minutes.lastUpdated,
+              lastUpdatedBy: minutes.lastUpdatedBy,
             }
-
+            admin.firestore().collection('actions').doc(item.id).set(action, {merge: true});
           }
         }
       }

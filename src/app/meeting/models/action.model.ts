@@ -9,6 +9,7 @@ export interface Action {
   id: string;
   topicId: string;
   meetingId: string;
+  minutesRevision: number;
   companyId: string;
   companyEmail: string;
   description: string;

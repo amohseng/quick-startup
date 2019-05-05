@@ -58,7 +58,13 @@ let _saveActions = (minutes) => {
               lastUpdated: minutes.lastUpdated,
               lastUpdatedBy: minutes.lastUpdatedBy,
             }
-            admin.firestore().collection('actions').doc(item.id).set(action, {merge: true});
+            admin.firestore().collection('actions').doc(item.id).get().then(doc => {
+              if(!doc) {
+                action.status = 'OPENED';
+                action.statusComment = 'New Action Created';
+              }
+              admin.firestore().collection('actions').doc(item.id).set(action, {merge: true});
+            });
           }
         }
       }

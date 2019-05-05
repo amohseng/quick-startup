@@ -1,3 +1,84 @@
-<p>
-  action-log works!
-</p>
+<section fxLayout="column" fxLayoutAlign="start center" class="row-height module-background">
+  <div class="toolbar primary-light-background primary-border-curvy-top" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <mat-icon class="icon-color">list_alt</mat-icon>
+    <div class="icon-color"><strong>Action Log</strong></div>
+    <div class="spacer"></div>
+    <button mat-icon-button type="button" color="primary" [disabled]="true">
+    </button>
+  </div>
+  <div class="container primary-border-curvy-bottom" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
+    <div *ngIf="!isLoading && !showActionFilter" ngClass="form-item">
+      <mat-icon color="primary">error_outline</mat-icon>
+      <span>&nbsp;&nbsp;</span>
+      <div ngClass="form-field">
+        <span class="subject primary-color">
+          <span>Show</span>
+          <span *ngIf="actionFilter.actionBy"><strong> my tasks</strong></span>
+          <span *ngIf="actionFilter.followupBy"><strong> actions to follow-up</strong></span>
+          <span *ngIf="actionFilter.companyId"><strong> all my company actions</strong></span>
+          <span *ngIf="actionFilter.from || actionFilter.to"> with due date</span>
+          <span *ngIf="actionFilter.from"> starting from <strong>{{ actionFilter.from | date: 'longDate' }}</strong></span>
+          <span *ngIf="actionFilter.to"> until <strong>{{ actionFilter.to | date: 'longDate' }}</strong></span>
+        </span>
+      </div>
+      <button mat-icon-button type="button" color="primary" (click)="showActionFilter = true">
+          <mat-icon color="primary">filter_list</mat-icon>
+      </button>
+    </div>
+    <ng-container *ngIf="!isLoading && showActionFilter">
+      <div ngClass="form-item">
+        <mat-icon color="primary">filter_list</mat-icon>
+        <span>&nbsp;&nbsp;</span>
+        <mat-form-field ngClass="form-field">
+          <mat-select placeholder="Select Actions Filter" [ngModel]="actionFilter.filterType" required name="filterType" #filterTypeSelect="ngModel">
+            <mat-option value="ACTIONBY">my tasks</mat-option>
+            <mat-option value="FOLLOWUPBY">actions to follow-up</mat-option>
+            <mat-option value="COMPANYID">all my company actions</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary">today</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field>
+          <input matInput [matDatepicker]="fromPicker" placeholder="From Date" [ngModel]="actionFilter.from" name="fromDate" #fromDateInput="ngModel">
+          <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary">today</mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field>
+          <input matInput [matDatepicker]="toPicker" placeholder="To Date" [ngModel]="actionFilter.to" name="toDate" #toDateInput="ngModel">
+          <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <button mat-button type="button" color="primary" (click)="showActionFilter = false">
+          <mat-icon color="primary" svgIcon="outline-cancel"></mat-icon> Cancel
+        </button>
+        <button mat-button type="button" color="primary" (click)="search(filterTypeSelect, fromDateInput, toDateInput)">
+          <mat-icon color="primary">search</mat-icon> Search
+        </button>
+      </div>
+    </ng-container>
+    <div *ngIf="!isLoading && actions.length === 0" ngClass="form-item" >
+      <mat-icon color="accent">warning</mat-icon>
+      <span>&nbsp;&nbsp;</span>
+      <div ngClass="form-field">
+        <span class="subject primary-color">There are no actions matching the selection criteria.</span>
+      </div>
+    </div>
+    <ng-container *ngIf="isLoading">
+      <div class="divider"></div>
+      Searching...
+      <div class="divider"></div>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </ng-container>
+
+    <div class="divider"></div>
+  </div>
+</section>

@@ -8,6 +8,9 @@ import { Meeting } from './models/meeting.model';
 import { InvitationResponse } from './models/invitation-response.model';
 import { Minutes } from './models/minutes.model';
 import { Comment } from './models/comment.model';
+import { Action, ActionFilter } from './models/action.model';
+
+
 
 
 @Injectable({
@@ -69,6 +72,17 @@ export class MeetingService {
     .catch(error => {
       console.log(error);
       throw new Error('Oops! Comment not saved');
+    });
+  }
+
+  saveAction(action: Action): Promise<string> {
+    return this.db.collection('actions').doc(action.id).set(action)
+    .then(() => {
+      return Promise.resolve(action.id);
+    })
+    .catch(error => {
+      console.log(error);
+      throw new Error('Oops! Action not saved');
     });
   }
 
@@ -174,5 +188,25 @@ export class MeetingService {
         const lastUpdated = (data.lastUpdated as unknown as firestore.Timestamp).toDate();
         return { ...data, id, lastUpdated };
       })));
+  }
+
+  getActions(actionFilter: ActionFilter) {
+    return this.db.collection('actions', ref => {
+      let query =  ref.orderBy('dueDate');
+      if (actionFilter.companyId) { query = query.where('companyId', '==', actionFilter.companyId); }
+      if (actionFilter.actionBy) { query = query.where('actionBy', '==', actionFilter.actionBy); }
+      if (actionFilter.followupBy) { query = query.where('followupBy', '==', actionFilter.followupBy); }
+      if (actionFilter.from) { query = query.where('dueDate', '>=', actionFilter.from); }
+      if (actionFilter.to) { query = query.where('dueDate', '<=', actionFilter.to); }
+      return query;
+    })
+    .snapshotChanges()
+    .pipe(map(actions => actions.map(action => {
+      const data = action.payload.doc.data() as Action;
+      const id = action.payload.doc.id;
+      const dueDate = (data.dueDate as unknown as firestore.Timestamp).toDate();
+      const lastUpdated = (data.lastUpdated as unknown as firestore.Timestamp).toDate();
+      return { ...data, id, dueDate, lastUpdated };
+    })));
   }
 }

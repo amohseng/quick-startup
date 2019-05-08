@@ -143,7 +143,7 @@
               <br *ngIf="item.actionBy !== 'none'">
               <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</div>
               <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</div>
-              <div *ngIf="item.actionBy !== 'none' && item.followupBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Follow-Up By:</strong> {{ getDisplayName(item.followupBy) }}</div>
+              <div *ngIf="item.actionBy !== 'none' && item.followupBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Follow-up By:</strong> {{ getDisplayName(item.followupBy) }}</div>
             </div>
             <button mat-icon-button [matMenuTriggerFor]="actionMenu" color="primary"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #actionMenu="matMenu">

@@ -72,13 +72,46 @@
         <span class="subject primary-color">There are no actions matching the selection criteria.</span>
       </div>
     </div>
+    <ng-container *ngIf="!isLoading && actions.length > 0">
+      <div class="minutes-line primary-dark-border-bottom accent-dark-border-top primary-light-background">
+        <div class="form-field">
+          <span class="primary-dark-color"><strong>Actions Details</strong></span>
+        </div>
+      </div>
+      <ng-container *ngFor="let action of actions; index as actionIndex">
+        <div class="minutes-line">
+          <mat-icon *ngIf="action.status === 'OPENED'" color="primary">assignment</mat-icon>
+          <mat-icon *ngIf="action.status === 'READY'" color="primary">assignment_returned</mat-icon>
+          <mat-icon *ngIf="action.status === 'CLOSED'" color="primary">assignment_turned_in</mat-icon>
+          <span>&nbsp;&nbsp;</span>
+          <div class="form-field">
+            <div class="primary-dark-color">{{ action.description }}</div>
+            <br>
+            <div class="primary-dark-color font-sm transparent-separator"><strong>Action By:</strong> {{ getDisplayName(action.actionBy) }}</div>
+            <div class="primary-dark-color font-sm transparent-separator"><strong>Due Date:</strong> {{ action.dueDate | date: 'longDate' }}</div>
+            <div class="primary-dark-color font-sm transparent-separator"><strong>Follow-up By:</strong> {{ getDisplayName(action.followupBy) }}</div>
+            <div class="primary-dark-color font-sm transparent-separator"><strong>Status:</strong> {{ action.status }}</div>
+          </div>
+        </div>
+        <div class="comment-line">
+          <span class="minutes-line-number primary-dark-color"></span>
+          <img class="avatar" [src]="getPhotoURL(action.lastUpdatedBy)" [alt]="getDisplayName(action.lastUpdatedBy)">
+          <div class="form-field">
+            <div class="primary-dark-color font-sm"><strong>{{ getDisplayName(action.lastUpdatedBy) }}</strong></div>
+            <div class="primary-dark-color font-sm">{{ action.statusComment }}</div>
+            <div class="primary-color font-xs">{{ this.timeElapsed.get(action.id) | async }}</div>
+          </div>
+        </div>
+        <div class="minutes-line-edit primary-dark-border-bottom"></div>
+      </ng-container>
+    </ng-container>
     <ng-container *ngIf="isLoading">
       <div class="divider"></div>
       Searching...
       <div class="divider"></div>
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </ng-container>
-
+    <div class="divider"></div>
     <div class="divider"></div>
   </div>
 </section>

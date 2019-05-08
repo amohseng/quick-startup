@@ -273,7 +273,8 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
         description: newItemInput.value,
         actionBy: newItemActionBySelect.value,
         dueDate: new Date(newItemDueDateInput.value),
-        followupBy: newItemActionBySelect.value === 'none' ? 'none' : newItemFollowupBySelect.value
+        followupBy: (newItemActionBySelect.value === 'none' || newItemActionBySelect.value === newItemFollowupBySelect.value) ?
+                    'none' : newItemFollowupBySelect.value
       });
     }
     newItemInput.reset();
@@ -327,8 +328,9 @@ export class EditMinutesComponent implements OnInit, OnDestroy {
           this.minutes.topics[topicIndex].items[itemIndex].description = updateItemInput.value;
           this.minutes.topics[topicIndex].items[itemIndex].actionBy = updateItemActionBySelect.value;
           this.minutes.topics[topicIndex].items[itemIndex].dueDate = new Date(updateItemDueDateInput.value);
-          this.minutes.topics[topicIndex]
-                      .items[itemIndex].followupBy = updateItemActionBySelect.value === 'none' ? 'none' : updateItemFollowupBySelect.value;
+          this.minutes.topics[topicIndex].items[itemIndex].followupBy =
+                      (updateItemActionBySelect.value === 'none' || updateItemActionBySelect.value === updateItemFollowupBySelect.value) ?
+                      'none' : updateItemFollowupBySelect.value;
         }
       }
     }

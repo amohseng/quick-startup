@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+
+import { Subscription, interval } from 'rxjs';
+import { take, map, distinctUntilChanged, startWith } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { CompanyService } from 'src/app/company/company.service';
 import { MeetingService } from '../meeting.service';
@@ -12,6 +14,7 @@ import { DateService } from 'src/app/util/date.service';
 import { Action, ActionFilter, ActionFilterType } from '../models/action.model';
 import { ProfileData } from 'src/app/auth/models/profile-data.model';
 import { Employee } from 'src/app/company/models/employee.model';
+import { Company } from 'src/app/company/models/company.model';
 
 @Component({
   selector: 'app-action-log',
@@ -22,13 +25,21 @@ export class ActionLogComponent implements OnInit, OnDestroy {
   isLoading = false;
   email = '';
   profileData: ProfileData;
+  companies: Company[];
   employee: Employee;
   actions: Action[] = [];
+  employees: Employee[] = [];
   actionFilter: ActionFilter;
   showActionFilter = false;
 
+  timeElapsed: Map<string, any> = new Map();
+
+  totalResourcesToFetch = 4;
+  fetchedResources = 0;
+  companiesSubscription: Subscription;
   employeeSubscription: Subscription;
   actionsSubscription: Subscription;
+  employeesSubscription: Subscription;
 
   constructor(private companyService: CompanyService, private meetingService: MeetingService, private authService: AuthService,
     private uiService: UIService, public ds: DateService, private router: Router, private route: ActivatedRoute) { }
@@ -42,11 +53,13 @@ export class ActionLogComponent implements OnInit, OnDestroy {
       actionBy: this.email,
     };
     this.getEmployee();
+    this.getCompanies();
   }
 
   getEmployee() {
     this.employeeSubscription = this.companyService.getEmployee(this.email).pipe(take(1)).subscribe(employee => {
       this.employee = employee;
+      this.fetchedResources += 1;
       this.getActions();
     },
     error => {
@@ -56,14 +69,41 @@ export class ActionLogComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
     });
   }
+
+  getCompanies() {
+    if (this.companiesSubscription) {
+      this.companiesSubscription.unsubscribe();
+    }
+    this.companiesSubscription = this.companyService.getCompanies().pipe(take(1)).subscribe(companies => {
+      this.companies = companies;
+      this.fetchedResources += 1;
+      if (this.fetchedResources >= this.totalResourcesToFetch) {
+        this.isLoading = false;
+      }
+    },
+    error => {
+      console.log(error);
+      this.isLoading = false;
+      this.uiService.showSnackBar(error, null, 3000);
+    });
+  }
+
   getActions() {
     if (this.actionsSubscription) {
       this.actionsSubscription.unsubscribe();
     }
     this.actionsSubscription = this.meetingService.getActions(this.actionFilter).pipe(take(1)).subscribe(actions => {
       this.actions = actions;
+      this.actions.forEach((action) => {
+        if (!this.timeElapsed.get(action.id)) {
+          this.timeElapsed
+          .set(action.id, interval(1000).pipe(startWith(moment(action.lastUpdated).fromNow(true)),
+            map(() => moment(action.lastUpdated).fromNow(true)), distinctUntilChanged()));
+        }
+      });
+      this.fetchedResources += 1;
       console.log(this.actions);
-      this.isLoading = false;
+      this.getActionsEmployees();
     },
     error => {
       console.log(error);
@@ -71,6 +111,50 @@ export class ActionLogComponent implements OnInit, OnDestroy {
       this.uiService.showSnackBar(error, null, 3000);
       this.router.navigate(['/']);
     });
+  }
+  getActionsEmployees() {
+    const ids: string[] = [];
+    let counter = 0;
+    this.actions.forEach(action => {
+      if (ids.indexOf(action.actionBy) < 0) {
+        ids.push(action.actionBy);
+      }
+      if (ids.indexOf(action.followupBy) < 0 && action.followupBy !== 'none') {
+        ids.push(action.followupBy);
+      }
+      if (ids.indexOf(action.lastUpdatedBy) < 0) {
+        ids.push(action.lastUpdatedBy);
+      }
+    });
+
+    if (ids.length > 0) {
+      if (this.employeesSubscription) {
+        this.employeesSubscription.unsubscribe();
+      }
+      this.employeesSubscription = this.companyService.getEmployees(ids).subscribe((employee: Employee) => {
+        if (employee) {
+          this.employees.push(employee);
+        }
+        counter++;
+        if (counter === ids.length) {
+          this.fetchedResources += 1;
+          if (this.fetchedResources >= this.totalResourcesToFetch) {
+           this.isLoading = false;
+          }
+        }
+      },
+      error => {
+        console.log(error);
+        this.isLoading = false;
+        this.uiService.showSnackBar(error, null, 3000);
+        this.router.navigate(['/']);
+      });
+    } else {
+      this.fetchedResources += 1;
+      if (this.fetchedResources >= this.totalResourcesToFetch) {
+        this.isLoading = false;
+      }
+    }
   }
   search(filterTypeSelect: FormControl, fromDateInput: FormControl, toDateInput: FormControl) {
     this.actionFilter = {};
@@ -92,16 +176,52 @@ export class ActionLogComponent implements OnInit, OnDestroy {
     }
     this.isLoading = true;
     this.showActionFilter = false;
+    this.fetchedResources = 2;
     this.getActions();
 
   }
 
+  getDisplayName(invitation: string) {
+    let displayName = invitation;
+    const employee = this.employees.find((emp => {
+      return emp.id === invitation;
+    }));
+
+    if (employee) {
+      displayName = employee.displayName + ' (' + this.getCompanyById(employee.companyId).name + ')';
+    }
+    return displayName;
+  }
+  getPhotoURL(invitation: string) {
+    let photoURL = 'assets/img/profile/anonymous.png';
+    const employee = this.employees.find((emp => {
+      return emp.id === invitation;
+    }));
+
+    if (employee) {
+      photoURL = employee.photoURL;
+    }
+    return photoURL;
+  }
+
+  getCompanyById(companyId: string) {
+    return this.companies.find((company => {
+      return company.id === companyId;
+    }));
+  }
+
   ngOnDestroy() {
+    if (this.companiesSubscription) {
+      this.companiesSubscription.unsubscribe();
+    }
     if (this.employeeSubscription) {
       this.employeeSubscription.unsubscribe();
     }
     if (this.actionsSubscription) {
       this.actionsSubscription.unsubscribe();
+    }
+    if (this.employeesSubscription) {
+      this.employeesSubscription.unsubscribe();
     }
   }
 }

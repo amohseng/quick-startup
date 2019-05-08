@@ -91,7 +91,7 @@
             <br>
             <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Action By:</strong> {{ getDisplayName(item.actionBy) }}</div>
             <div *ngIf="item.actionBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Due Date:</strong> {{ item.dueDate | date: 'longDate' }}</div>
-            <div *ngIf="item.actionBy !== 'none' && item.followupBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Follow-Up By:</strong> {{ getDisplayName(item.followupBy) }}</div>
+            <div *ngIf="item.actionBy !== 'none' && item.followupBy !== 'none'" class="primary-dark-color font-xs transparent-separator"><strong>Follow-up By:</strong> {{ getDisplayName(item.followupBy) }}</div>
             <span class="primary-color font-sm clickable" (click)="toggleShowItemComments(item.id)"> {{ getCommentsByItemId(item.id).length }} Comments </span>
             <button mat-button color="primary" (click)="toggleShowItemComments(item.id)"><mat-icon svgIcon="outline-mode_comment"></mat-icon><span class="font-sm font-light-weight">Comment</span></button>
           </div>

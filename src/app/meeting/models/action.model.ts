@@ -1,17 +1,19 @@
 export enum ActionStatus  {
-  Opened = 'OPENED',
-  Ready = 'READY',
-  Closed = 'CLOSED'
+  Any = 'Any',
+  Opened = 'Opened',
+  Ready = 'Ready',
+  Closed = 'Closed'
 }
 
 export enum ActionFilterType  {
-  CompanyId = 'COMPANYID',
-  ActionBy = 'ACTIONBY',
-  FollowupBy = 'FOLLOWUPBY'
+  CompanyId = 'CompanyId',
+  ActionBy = 'ActionBy',
+  FollowupBy = 'FollowupBy'
 }
 
 export interface ActionFilter {
   filterType?: ActionFilterType;
+  status?: ActionStatus;
   companyId?: string;
   actionBy?: string;
   followupBy?: string;

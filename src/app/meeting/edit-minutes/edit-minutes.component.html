@@ -185,7 +185,7 @@
             <mat-datepicker #newItemDueDatePicker></mat-datepicker>
           </mat-form-field>
         </div>
-        <div class="minutes-line-edit primary-dark-border-bottom">
+        <div class="minutes-line-edit">
           <span class="minutes-line-number primary-dark-color"></span>
           <mat-form-field>
             <mat-select placeholder="Follow-Up By" [ngModel]="newItemFollowupByDefaultValue" required #newItemFollowupBySelect="ngModel">
@@ -198,12 +198,13 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <div *ngIf="!(topicIndex === minutes.topics.length - 1)" class="minutes-line-edit primary-dark-border-bottom"></div>
         <!-- END: New Item-->
       </ng-container>
       <!-- END: Topic Items -->
     </ng-container>
     <!-- New Topic-->
-    <div class="minutes-line-edit primary-dark-border-bottom" *ngIf="openTopicItems === null">
+    <div class="minutes-line-edit" *ngIf="openTopicItems === null">
       <span class="minutes-line-number primary-dark-color"><strong>{{ this.minutes.topics.length + 1 }}.</strong></span>
       <mat-form-field class="form-field">
           <input type="text" autocomplete="off" matInput placeholder="Add New Topic" (keypress)="onNewTopicInputKeyPress($event, newTopicInput)" (blur)="onNewTopicInputBlur(newTopicInput)" ngModel required #newTopicRef #newTopicInput="ngModel">

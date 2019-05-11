@@ -76,12 +76,13 @@
     <!-- END: Minutes Header Line -->
     <!-- Minutes Topics -->
     <ng-container *ngFor="let topic of minutes.topics; index as topicIndex">
-      <div class="minutes-line primary-dark-border-bottom">
+      <div class="minutes-line">
         <span class="minutes-line-number primary-dark-color"><strong>{{ topicIndex + 1 }}.</strong></span>
         <div class="form-field">
           <span class="primary-dark-color"><strong>{{ topic.description }}</strong></span>
         </div>
       </div>
+      <div class="minutes-line-edit primary-dark-border-bottom"></div>
       <!-- Topic Items -->
       <ng-container *ngFor="let item of topic.items; index as itemIndex">
         <div class="minutes-line">
@@ -103,10 +104,10 @@
             <img class="avatar" [src]="getPhotoURL(email)" [alt]="getDisplayName(email)">
             <mat-form-field class="form-field">
               <textarea matInput [matTextareaAutosize]="true" placeholder="Add Comment" (blur)="onCommentInputBlur(commentInput)" ngModel required #commentRef #commentInput="ngModel"></textarea>
-          </mat-form-field>
-          <button type="button" mat-icon-button color="primary" [disabled]="!commentInput.valid" (click)="addComment(commentInput, item.id, topic.id)">
-            <mat-icon svgIcon="outline-add_comment"></mat-icon>
-          </button>
+            </mat-form-field>
+            <button type="button" mat-icon-button color="primary" [disabled]="!commentInput.valid" (click)="addComment(commentInput, item.id, topic.id)">
+              <mat-icon svgIcon="outline-add_comment"></mat-icon>
+            </button>
           </div>
           <ng-container *ngFor="let comment of getCommentsByItemId(item.id);">
             <div class="comment-line">
@@ -120,9 +121,9 @@
             </div>
           </ng-container>
         </ng-container>
-
-        <div class="minutes-line-edit primary-dark-border-bottom"></div>
+        <div *ngIf="!(topicIndex === minutes.topics.length - 1 && itemIndex === topic.items.length - 1)" class="minutes-line-edit primary-dark-border-bottom"></div>
       </ng-container>
+
     </ng-container>
       <!-- END: Topic Items -->
     <!-- END: Minutes Topics -->

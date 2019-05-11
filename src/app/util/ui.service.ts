@@ -46,8 +46,16 @@ export class UIService {
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-add_comment-24px.svg'));
     iconRegistry.addSvgIcon('outline-mode_comment',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-mode_comment-24px.svg'));
-    iconRegistry.addSvgIcon('outline-info',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-info-24px.svg'));
+    iconRegistry.addSvgIcon('outline-assignment',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-assignment-24px.svg'));
+    iconRegistry.addSvgIcon('outline-assignment_turned_in',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-assignment_turned_in-24px.svg'));
+    iconRegistry.addSvgIcon('outline-assignment_late',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-assignment_late-24px.svg'));
+    iconRegistry.addSvgIcon('outline-assignment_return',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-assignment_return-24px.svg'));
+    iconRegistry.addSvgIcon('outline-assignment_returned',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/outline-assignment_returned-24px.svg'));
     iconRegistry.addSvgIcon('contract',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/contract.svg'));
     iconRegistry.addSvgIcon('writing',

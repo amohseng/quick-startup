@@ -69,11 +69,11 @@ let _saveActions = (minutes) => {
 let _saveAction = (action) => {
   admin.firestore().collection('actions').doc(action.id).get().then(doc => {
     if(!doc.exists) {
-      action.status = 'OPENED';
+      action.status = 'Opened';
       action.statusComment = 'New Action Created';
       admin.firestore().collection('actions').doc(action.id).set(action);
     } else if (doc.data().description !== action.description || doc.data().actionBy !== action.actionBy || doc.data().followupBy !== action.followupBy || !doc.data().dueDate.isEqual(action.dueDate)) {
-        action.status = 'OPENED';
+        action.status = 'Opened';
         action.statusComment = 'Action Details Changed';
         admin.firestore().collection('actions').doc(action.id).set(action, {merge: true});
     }

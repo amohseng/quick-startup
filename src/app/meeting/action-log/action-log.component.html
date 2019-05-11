@@ -7,38 +7,50 @@
     </button>
   </div>
   <div class="container primary-border-curvy-bottom" ngClass.xs="container-xs" ngClass.gt-xs="container-sm" ngClass.gt-sm="container-md" ngClass.gt-md="container-lg">
-    <div *ngIf="!isLoading && !showActionFilter" ngClass="form-item">
-      <mat-icon color="primary">error_outline</mat-icon>
+    <div class="divider"></div>
+    <div *ngIf="!isLoading && !showActionFilter" ngClass="form-item clickable" (click)="showActionFilter = true">
+      <mat-icon color="primary">filter_list</mat-icon>
       <span>&nbsp;&nbsp;</span>
       <div ngClass="form-field">
         <span class="subject primary-color">
-          <span>Show</span>
-          <span *ngIf="actionFilter.actionBy"><strong> my tasks</strong></span>
-          <span *ngIf="actionFilter.followupBy"><strong> actions to follow-up</strong></span>
-          <span *ngIf="actionFilter.companyId"><strong> all my company actions</strong></span>
+          <span>Find</span>
+          <span *ngIf="actionFilter.actionBy"><strong> My tasks</strong></span>
+          <span *ngIf="actionFilter.followupBy"><strong> My follow-up tasks</strong></span>
+          <span *ngIf="actionFilter.companyId"><strong> All {{ getCompanyById(actionFilter.companyId).name }} meetings' actions</strong></span>
           <span *ngIf="actionFilter.from || actionFilter.to"> with due date</span>
           <span *ngIf="actionFilter.from"> starting from <strong>{{ actionFilter.from | date: 'longDate' }}</strong></span>
           <span *ngIf="actionFilter.to"> until <strong>{{ actionFilter.to | date: 'longDate' }}</strong></span>
+          <span *ngIf="(actionFilter.from || actionFilter.to) && actionFilter.status !== actionStatus.Any"> and</span>
+          <span *ngIf="actionFilter.status !== actionStatus.Any"> with <strong>{{ actionFilter.status }}</strong> status</span>
         </span>
       </div>
-      <button mat-icon-button type="button" color="primary" (click)="showActionFilter = true">
-          <mat-icon color="primary">filter_list</mat-icon>
-      </button>
     </div>
     <ng-container *ngIf="!isLoading && showActionFilter">
       <div ngClass="form-item">
         <mat-icon color="primary">filter_list</mat-icon>
-        <span>&nbsp;&nbsp;</span>
-        <mat-form-field ngClass="form-field">
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field ngClass="filter-select-md">
           <mat-select placeholder="Select Actions Filter" [ngModel]="actionFilter.filterType" required name="filterType" #filterTypeSelect="ngModel">
-            <mat-option value="ACTIONBY">my tasks</mat-option>
-            <mat-option value="FOLLOWUPBY">actions to follow-up</mat-option>
-            <mat-option value="COMPANYID">all my company actions</mat-option>
+            <mat-option [value]="actionFilterType.ActionBy">My tasks</mat-option>
+            <mat-option [value]="actionFilterType.FollowupBy">My follow-up tasks</mat-option>
+            <mat-option *ngIf="employee" [value]="actionFilterType.CompanyId">All {{ getCompanyById(employee.companyId).name }} meetings' actions</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div ngClass="form-item">
-        <mat-icon color="primary">today</mat-icon>
+        <mat-icon color="primary" svgIcon="outline-assignment"></mat-icon>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <mat-form-field ngClass="filter-select-sm">
+          <mat-select placeholder="Select Action Status" [ngModel]="actionFilter.status" required name="status" #statusSelect="ngModel">
+            <mat-option [value]="actionStatus.Any">{{ actionStatus.Any }}</mat-option>
+            <mat-option [value]="actionStatus.Opened">{{ actionStatus.Opened }}</mat-option>
+            <mat-option [value]="actionStatus.Ready">{{ actionStatus.Ready }}</mat-option>
+            <mat-option [value]="actionStatus.Closed">{{ actionStatus.Closed }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div ngClass="form-item">
+        <mat-icon color="primary">date_range</mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field>
           <input matInput [matDatepicker]="fromPicker" placeholder="From Date" [ngModel]="actionFilter.from" name="fromDate" #fromDateInput="ngModel">
@@ -47,7 +59,7 @@
         </mat-form-field>
       </div>
       <div ngClass="form-item">
-        <mat-icon color="primary">today</mat-icon>
+        <mat-icon color="primary">date_range</mat-icon>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <mat-form-field>
           <input matInput [matDatepicker]="toPicker" placeholder="To Date" [ngModel]="actionFilter.to" name="toDate" #toDateInput="ngModel">
@@ -60,7 +72,7 @@
         <button mat-button type="button" color="primary" (click)="showActionFilter = false">
           <mat-icon color="primary" svgIcon="outline-cancel"></mat-icon> Cancel
         </button>
-        <button mat-button type="button" color="primary" (click)="search(filterTypeSelect, fromDateInput, toDateInput)">
+        <button mat-button type="button" color="primary" (click)="search(filterTypeSelect, statusSelect, fromDateInput, toDateInput)">
           <mat-icon color="primary">search</mat-icon> Search
         </button>
       </div>
@@ -77,32 +89,77 @@
         <div class="form-field">
           <span class="primary-dark-color"><strong>Actions Details</strong></span>
         </div>
+        <span class="primary-dark-color" *ngIf="actions.length === 1">{{ actions.length }} action</span>
+        <span class="primary-dark-color" *ngIf="actions.length > 1">{{ actions.length }} actions</span>
       </div>
       <ng-container *ngFor="let action of actions; index as actionIndex">
         <div class="minutes-line">
-          <mat-icon *ngIf="action.status === 'OPENED'" color="primary">assignment</mat-icon>
-          <mat-icon *ngIf="action.status === 'READY'" color="primary">assignment_returned</mat-icon>
-          <mat-icon *ngIf="action.status === 'CLOSED'" color="primary">assignment_turned_in</mat-icon>
+          <mat-icon *ngIf="action.status === actionStatus.Opened && today.getTime() < action.dueDate.getTime()" color="primary">assignment</mat-icon>
+          <mat-icon *ngIf="action.status === actionStatus.Opened && today.getTime() >= action.dueDate.getTime()" color="warn">assignment_late</mat-icon>
+          <mat-icon *ngIf="action.status === actionStatus.Ready && today.getTime() < action.dueDate.getTime()" color="primary">assignment_returned</mat-icon>
+          <mat-icon *ngIf="action.status === actionStatus.Ready && today.getTime() >= action.dueDate.getTime()" color="warn">assignment_returned</mat-icon>
+          <mat-icon *ngIf="action.status === actionStatus.Closed" color="primary">assignment_turned_in</mat-icon>
           <span>&nbsp;&nbsp;</span>
           <div class="form-field">
             <div class="primary-dark-color">{{ action.description }}</div>
-            <br>
-            <div class="primary-dark-color font-sm transparent-separator"><strong>Action By:</strong> {{ getDisplayName(action.actionBy) }}</div>
-            <div class="primary-dark-color font-sm transparent-separator"><strong>Due Date:</strong> {{ action.dueDate | date: 'longDate' }}</div>
-            <div class="primary-dark-color font-sm transparent-separator"><strong>Follow-up By:</strong> {{ getDisplayName(action.followupBy) }}</div>
-            <div class="primary-dark-color font-sm transparent-separator"><strong>Status:</strong> {{ action.status }}</div>
           </div>
         </div>
-        <div class="comment-line">
-          <span class="minutes-line-number primary-dark-color"></span>
-          <img class="avatar" [src]="getPhotoURL(action.lastUpdatedBy)" [alt]="getDisplayName(action.lastUpdatedBy)">
-          <div class="form-field">
-            <div class="primary-dark-color font-sm"><strong>{{ getDisplayName(action.lastUpdatedBy) }}</strong></div>
-            <div class="primary-dark-color font-sm">{{ action.statusComment }}</div>
-            <div class="primary-color font-xs">{{ this.timeElapsed.get(action.id) | async }}</div>
+        <ng-container *ngIf="showActionUpdateStatus !== action.id">
+          <div class="minutes-line">
+            <span class="minutes-line-number primary-dark-color"></span>
+            <div class="form-field">
+              <div class="primary-dark-color font-sm transparent-separator"><strong>Action By:</strong> {{ getDisplayName(action.actionBy) }}</div>
+              <div class="primary-dark-color font-sm transparent-separator"><strong>Due Date:</strong> {{ action.dueDate | date: 'longDate' }}</div>
+              <div class="primary-dark-color font-sm transparent-separator"><strong>Status:</strong> {{ action.status }}</div>
+              <div *ngIf="action.followupBy !== 'none'" class="primary-dark-color font-sm transparent-separator"><strong>Follow-up By:</strong> {{ getDisplayName(action.followupBy) }}</div>
+            </div>
           </div>
-        </div>
-        <div class="minutes-line-edit primary-dark-border-bottom"></div>
+          <div class="comment-line">
+            <span class="minutes-line-number primary-dark-color"></span>
+            <img class="avatar" [src]="getPhotoURL(action.lastUpdatedBy)" [alt]="getDisplayName(action.lastUpdatedBy)">
+            <div class="form-field">
+              <div class="primary-dark-color font-sm"><strong>{{ getDisplayName(action.lastUpdatedBy) }}</strong></div>
+              <div class="primary-dark-color font-sm">{{ action.statusComment }}</div>
+              <div class="primary-color font-xs">{{ this.timeElapsed.get(action.id) | async }}</div>
+            </div>
+          </div>
+          <div class="comment-line">
+            <span class="minutes-line-number primary-dark-color"></span>
+            <div class="form-field">
+              <button mat-button type="button" color="primary" *ngIf="action.actionBy === email || action.followupBy === email" (click)="showActionUpdateStatus = action.id">
+               <mat-icon svgIcon="outline-assignment"></mat-icon> Update Status
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="showActionUpdateStatus === action.id">
+          <div class="comment-line-edit">
+            <span class="minutes-line-number primary-dark-color"></span>
+            <span>&nbsp;&nbsp;</span>
+            <img class="avatar" [src]="getPhotoURL(email)" [alt]="getDisplayName(email)">
+            <mat-form-field class="form-field">
+              <textarea matInput [matTextareaAutosize]="true" placeholder="Add Status Comment" (blur)="onCommentInputBlur(commentInput)" ngModel required #commentRef #commentInput="ngModel"></textarea>
+            </mat-form-field>
+          </div>
+          <div class="comment-line">
+            <span class="minutes-line-number primary-dark-color"></span>
+            <div class="form-field">
+              <button type="button" mat-button color="primary" (click)="showActionUpdateStatus = ''">
+                <mat-icon svgIcon="outline-cancel"></mat-icon> Cancel
+              </button>
+              <button *ngIf="action.status !== actionStatus.Opened && (action.actionBy === email || action.followupBy === email)" mat-button type="button" color="primary" [disabled]="!commentInput.valid" (click)="updateStatus(action, actionStatus.Opened, commentInput)">
+                <mat-icon svgIcon="outline-assignment_return"></mat-icon> Reopen
+              </button>
+              <button *ngIf="action.status === actionStatus.Opened && action.actionBy === email && action.followupBy !== 'none'" mat-button type="button" color="primary" [disabled]="!commentInput.valid" (click)="updateStatus(action, actionStatus.Ready, commentInput)">
+                <mat-icon svgIcon="outline-assignment_returned"></mat-icon> Ready
+              </button>
+              <button *ngIf="(action.status === actionStatus.Ready && action.followupBy === email) || (action.status === actionStatus.Opened && action.actionBy === email && action.followupBy === 'none')" mat-button type="button" color="primary" [disabled]="!commentInput.valid" (click)="updateStatus(action, actionStatus.Closed, commentInput)">
+                <mat-icon svgIcon="outline-assignment_turned_in"></mat-icon> Close
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <div *ngIf="actionIndex < actions.length - 1" class="minutes-line-edit primary-dark-border-bottom"></div>
       </ng-container>
     </ng-container>
     <ng-container *ngIf="isLoading">

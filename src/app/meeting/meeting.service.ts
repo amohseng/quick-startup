@@ -8,7 +8,7 @@ import { Meeting } from './models/meeting.model';
 import { InvitationResponse } from './models/invitation-response.model';
 import { Minutes } from './models/minutes.model';
 import { Comment } from './models/comment.model';
-import { Action, ActionFilter } from './models/action.model';
+import { Action, ActionFilter, ActionStatus } from './models/action.model';
 
 
 
@@ -196,6 +196,7 @@ export class MeetingService {
       if (actionFilter.companyId) { query = query.where('companyId', '==', actionFilter.companyId); }
       if (actionFilter.actionBy) { query = query.where('actionBy', '==', actionFilter.actionBy); }
       if (actionFilter.followupBy) { query = query.where('followupBy', '==', actionFilter.followupBy); }
+      if (actionFilter.status && actionFilter.status !== ActionStatus.Any) { query = query.where('status', '==', actionFilter.status); }
       if (actionFilter.from) { query = query.where('dueDate', '>=', actionFilter.from); }
       if (actionFilter.to) { query = query.where('dueDate', '<=', actionFilter.to); }
       return query;

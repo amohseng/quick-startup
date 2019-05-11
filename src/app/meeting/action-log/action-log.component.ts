@@ -11,7 +11,7 @@ import { MeetingService } from '../meeting.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UIService } from 'src/app/util/ui.service';
 import { DateService } from 'src/app/util/date.service';
-import { Action, ActionFilter, ActionFilterType } from '../models/action.model';
+import { Action, ActionFilter, ActionFilterType, ActionStatus } from '../models/action.model';
 import { ProfileData } from 'src/app/auth/models/profile-data.model';
 import { Employee } from 'src/app/company/models/employee.model';
 import { Company } from 'src/app/company/models/company.model';
@@ -22,6 +22,9 @@ import { Company } from 'src/app/company/models/company.model';
   styleUrls: ['./action-log.component.css']
 })
 export class ActionLogComponent implements OnInit, OnDestroy {
+  actionStatus = ActionStatus;
+  actionFilterType = ActionFilterType;
+  today: Date = new Date();
   isLoading = false;
   email = '';
   profileData: ProfileData;
@@ -31,6 +34,7 @@ export class ActionLogComponent implements OnInit, OnDestroy {
   employees: Employee[] = [];
   actionFilter: ActionFilter;
   showActionFilter = false;
+  showActionUpdateStatus = '';
 
   timeElapsed: Map<string, any> = new Map();
 
@@ -50,7 +54,8 @@ export class ActionLogComponent implements OnInit, OnDestroy {
     this.profileData = this.authService.getProfile();
     this.actionFilter = {
       filterType: ActionFilterType.ActionBy,
-      actionBy: this.email,
+      status: ActionStatus.Any,
+      actionBy: this.email
     };
     this.getEmployee();
     this.getCompanies();
@@ -92,17 +97,15 @@ export class ActionLogComponent implements OnInit, OnDestroy {
     if (this.actionsSubscription) {
       this.actionsSubscription.unsubscribe();
     }
-    this.actionsSubscription = this.meetingService.getActions(this.actionFilter).pipe(take(1)).subscribe(actions => {
+    this.actionsSubscription = this.meetingService.getActions(this.actionFilter).subscribe(actions => {
       this.actions = actions;
       this.actions.forEach((action) => {
-        if (!this.timeElapsed.get(action.id)) {
-          this.timeElapsed
-          .set(action.id, interval(1000).pipe(startWith(moment(action.lastUpdated).fromNow(true)),
-            map(() => moment(action.lastUpdated).fromNow(true)), distinctUntilChanged()));
-        }
+        this.timeElapsed
+            .set(action.id, interval(1000).pipe(startWith(moment(action.lastUpdated).fromNow(false)),
+                                                map(() => moment(action.lastUpdated).fromNow(false)),
+                                                distinctUntilChanged()));
       });
       this.fetchedResources += 1;
-      console.log(this.actions);
       this.getActionsEmployees();
     },
     error => {
@@ -116,15 +119,16 @@ export class ActionLogComponent implements OnInit, OnDestroy {
     const ids: string[] = [];
     let counter = 0;
     this.actions.forEach(action => {
-      if (ids.indexOf(action.actionBy) < 0) {
+      if (ids.indexOf(action.actionBy) < 0 && !this.employees.find(employee => employee.id === action.actionBy)) {
         ids.push(action.actionBy);
       }
-      if (ids.indexOf(action.followupBy) < 0 && action.followupBy !== 'none') {
+      if (action.followupBy !== 'none' && ids.indexOf(action.followupBy) < 0
+          && !this.employees.find(employee => employee.id === action.followupBy)) {
         ids.push(action.followupBy);
       }
-      if (ids.indexOf(action.lastUpdatedBy) < 0) {
+      if (ids.indexOf(action.lastUpdatedBy) < 0 && !this.employees.find(employee => employee.id === action.lastUpdatedBy)) {
         ids.push(action.lastUpdatedBy);
-      }
+       }
     });
 
     if (ids.length > 0) {
@@ -156,7 +160,7 @@ export class ActionLogComponent implements OnInit, OnDestroy {
       }
     }
   }
-  search(filterTypeSelect: FormControl, fromDateInput: FormControl, toDateInput: FormControl) {
+  search(filterTypeSelect: FormControl, statusSelect: FormControl, fromDateInput: FormControl, toDateInput: FormControl) {
     this.actionFilter = {};
     if (filterTypeSelect.valid) {
       this.actionFilter.filterType = filterTypeSelect.value;
@@ -168,6 +172,10 @@ export class ActionLogComponent implements OnInit, OnDestroy {
         this.actionFilter.companyId = this.employee.companyId;
       }
     }
+    if (statusSelect.valid) {
+      this.actionFilter.status = statusSelect.value;
+    }
+
     if (fromDateInput.valid) {
       this.actionFilter.from = fromDateInput.value;
     }
@@ -192,6 +200,7 @@ export class ActionLogComponent implements OnInit, OnDestroy {
     }
     return displayName;
   }
+
   getPhotoURL(invitation: string) {
     let photoURL = 'assets/img/profile/anonymous.png';
     const employee = this.employees.find((emp => {
@@ -208,6 +217,28 @@ export class ActionLogComponent implements OnInit, OnDestroy {
     return this.companies.find((company => {
       return company.id === companyId;
     }));
+  }
+
+  onCommentInputBlur(commentInput: FormControl) {
+    if (!commentInput.valid) {
+      commentInput.reset();
+    }
+  }
+
+  async updateStatus(action: Action, actionStatus: ActionStatus, commentInput: FormControl) {
+    try {
+      const newValue: Action = {...action};
+      newValue.status = actionStatus;
+      newValue.statusComment = commentInput.value;
+      newValue.lastUpdated = new Date();
+      newValue.lastUpdatedBy = this.email;
+      const actionId = await this.meetingService.saveAction(newValue);
+      this.uiService.showSnackBar('Action status updated successfully!', null, 3000);
+      this.showActionUpdateStatus = '';
+    } catch (error) {
+      console.log(error);
+      this.uiService.showSnackBar(error, null, 3000);
+    }
   }
 
   ngOnDestroy() {

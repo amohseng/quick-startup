@@ -2,6 +2,13 @@ mat-progress-bar {
   width: 50%;
 }
 
+.filter-select-sm {
+  width: 200px;
+}
+.filter-select-md {
+  width: 350px;
+}
+
 .module-background {
   background-color: rgb(250,255,250);
 }

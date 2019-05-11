@@ -167,8 +167,8 @@ export class ViewMinutesComponent implements OnInit, OnDestroy {
       this.comments.forEach((comment) => {
         if (!this.timeElapsed.get(comment.id)) {
           this.timeElapsed
-          .set(comment.id, interval(1000).pipe(startWith(moment(comment.lastUpdated).fromNow(true)),
-            map(() => moment(comment.lastUpdated).fromNow(true)), distinctUntilChanged()));
+          .set(comment.id, interval(1000).pipe(startWith(moment(comment.lastUpdated).fromNow(false)),
+            map(() => moment(comment.lastUpdated).fromNow(false)), distinctUntilChanged()));
         }
       });
       this.fetchedResources += 1;
